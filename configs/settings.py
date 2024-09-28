@@ -36,8 +36,12 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "django_countries",
+    "django_filters"
     # my apps
     "apps.car",
+    "apps.auth",
+    "apps.users",
+    "apps.advertisement",
     "core",
 ]
 

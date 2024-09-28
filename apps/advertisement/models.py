@@ -5,8 +5,8 @@ from core.models import BaseModel
 
 class AdvertisementModel(BaseModel):
     class Meta:
-        db_table = 'advertisement'
-        ordering = ['id']
+        db_table = "advertisement"
+        ordering = ["id"]
 
     general_views = ...
     day_views = ...
@@ -18,8 +18,8 @@ class AdvertisementModel(BaseModel):
 
 class StatisticAdvertisementModel(models.Model):
     class Meta:
-        db_table = 'statistic_advertisement'
-        ordering = ['id']
+        db_table = "statistic_advertisement"
+        ordering = ["id"]
 
     seller = ...
     car = ...
