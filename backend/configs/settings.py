@@ -27,6 +27,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = os.environ.get("DEBUG") == "True"
 
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = "users.UserCustomModel"
 
 
 # Application definition
@@ -36,10 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "django_countries",
-    "django_filters"
+    "django_filters",
     # my apps
     "apps.car",
-    "apps.auth",
     "apps.users",
     "apps.advertisement",
     "core",
