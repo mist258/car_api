@@ -26,8 +26,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG") == "True"
 
-ALLOWED_HOSTS = []
-AUTH_USER_MODEL = "users.UserCustomModel"
+ALLOWED_HOSTS = ['*']
+AUTH_USER_MODEL = 'users.UserCustomModel'
 
 
 # Application definition
@@ -77,11 +77,11 @@ WSGI_APPLICATION = "configs.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRESQL_BATABASE"),
-        "USER": os.environ.get("POSTGRESQL_USER"),
-        "PASSWORD": os.environ.get("POSTGRESQL_PASSWORD"),
-        "HOST": os.environ.get("POSTGRESQL_HOST"),
-        "PORT": os.environ.get("POSTGRESQL_PORT"),
+        "NAME": os.environ.get("POSTGRES_DATABASE"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": os.environ.get("POSTGRES_HOST"),
+        "PORT": os.environ.get("POSTGRES_PORT"),
     }
 }
 

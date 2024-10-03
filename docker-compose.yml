@@ -10,7 +10,7 @@ services:
       - "8888:8000"
     restart: on-failure
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py wait_db && python manage.py runserver 0.0.0.0:8000"
 
   db:
     image: postgres:13-alpine
@@ -19,5 +19,5 @@ services:
     volumes:
       - ./postgresql_db:/var/lib/postgresql
     ports:
-      - "5434:5432"
+      - "5433:5432"
     restart: on-failure
