@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     "django_countries",
     "django_filters",
     # my apps
-    "apps.car",
-    "apps.users",
-    "apps.advertisement",
-    "core",
+    'apps.users',
+    'apps.car',
+    'apps.advertisement',
+    'core',
 ]
 
 MIDDLEWARE = [

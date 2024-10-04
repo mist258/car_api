@@ -9,6 +9,7 @@ class UserCustomManager(Manager):
         if not password:
             raise ValueError('Password must be set')
 
+
         # normalize email
         email = self.normalize_email(email)
         # create user
@@ -33,9 +34,4 @@ class UserCustomManager(Manager):
 
         user = self.create_user(email, password, **extra_fields)
         return user
-
-
-
-
-
 

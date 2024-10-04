@@ -4,8 +4,11 @@ services:
       context: .
     volumes:
       - ./backend:/app
+    environment:
+      - PYTHONPATH=/app
     env_file:
       - .env
+    working_dir: /app
     ports:
       - "8888:8000"
     restart: on-failure
@@ -19,5 +22,5 @@ services:
     volumes:
       - ./postgresql_db:/var/lib/postgresql
     ports:
-      - "5433:5432"
+      - "5434:5432"
     restart: on-failure
