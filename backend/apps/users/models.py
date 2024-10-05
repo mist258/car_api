@@ -1,10 +1,11 @@
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 
-from ..users.manager import UserCustomManager
+from apps.users.manager import UserCustomManager
+from core.models import BaseModel
 
 
-class UserCustomModel(AbstractUser, PermissionsMixin):
+class UserCustomModel(AbstractUser, PermissionsMixin, BaseModel):
     class Meta:
         db_table = 'auth_user'
         ordering = ['id']
@@ -18,7 +19,7 @@ class UserCustomModel(AbstractUser, PermissionsMixin):
     objects = UserCustomManager()
 
 
-class UserProfile(models.Model):
+class UserProfile(BaseModel):
     class Meta:
         db_table = 'user_profile'
         ordering = ['id']
