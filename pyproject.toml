@@ -12,6 +12,8 @@ psycopg2 = "^2.9.9"
 django-dotenv = "^1.4.2"
 django-countries = "^7.6.1"
 django-filter = "^24.3"
+pillow = "^10.4.0"
+djangorestframework-simplejwt = "^5.3.1"
 
 
 [tool.poetry.group.dev.dependencies]

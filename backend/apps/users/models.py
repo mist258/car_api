@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core import validators
 from django.core.validators import RegexValidator
 from django.db import models
@@ -8,7 +8,7 @@ from apps.users.manager import UserCustomManager
 from core.models import BaseModel
 
 
-class UserCustomModel(AbstractUser, PermissionsMixin, BaseModel):
+class UserCustomModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     class Meta:
         db_table = 'auth_user'
         ordering = ['id']
@@ -35,13 +35,13 @@ class UserProfile(BaseModel):
         db_table = 'user_profile'
         ordering = ['id']
 
-    first_name = models.CharField(max_length=50, validators=[RegexValidator(regex=r'^[A-Za-z]*$',
-                                                                            error_message=_('First name is invalid'))])
-    last_name = models.CharField(max_length=50, validators=[RegexValidator(regex=r'^[A-Za-z]*$',
-                                                                         error_message=_('Last name is invalid'))])
+    first_name = models.CharField(max_length=50, validators=[RegexValidator(regex=r'^[A-Za-z]*$')],
+                                  error_messages=_('First name is invalid'))
+    last_name = models.CharField(max_length=50, validators=[RegexValidator(regex=r'^[A-Za-z]*$')],
+                                                                error_messages=_('Last name is invalid'))
     phone_number = models.CharField(max_length=20, validators=[RegexValidator
                                                                (regex=r'^\+?3?8?(0[\s\.-]\d{2}[\s\.-]\d{3}[\s\.-]\d{2}[\s\.-]\d{2})$')],
-                                                                        error_message=_('Phone number is invalid'))
+                                                                        error_messages=_('Phone number is invalid'))
     age = models.IntegerField(validators=[validators.MinValueValidator(18), validators.MaxValueValidator(90)],
                               error_messages=_('Age must be between 18 and 90'))
     is_seller = models.BooleanField(default=False)
