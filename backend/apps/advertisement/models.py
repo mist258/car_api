@@ -20,10 +20,10 @@ class StatisticAdvertisementModel(BaseModel):
     week_views = models.IntegerField(default=0)
     month_views = models.IntegerField(default=0)
     last_view_date = models.DateTimeField(default=timezone.now)
-    region_avg_car_price = models.DecimalField(max_digits=10,
+    car_avg_price_in_region = models.DecimalField(max_digits=10,
                                                decimal_places=3,
                                                default=0)
-    country_avg_car_price = models.DecimalField(max_digits=10,
+    car_avg_price_in_uk = models.DecimalField(max_digits=10,
                                                 decimal_places=3,
                                                 default=0)
 
