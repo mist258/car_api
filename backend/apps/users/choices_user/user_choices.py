@@ -8,3 +8,4 @@ class AccountType(models.TextChoices):
 class UserRoleType(models.TextChoices):
     SELLER = 'seller', 'Seller'
     BUYER = 'buyer', 'Buyer'
+    OTHER = 'other', 'Other'

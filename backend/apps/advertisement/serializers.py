@@ -39,17 +39,28 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                             'is_active',
                             'statistic',)
 
-        def get_avg_price_in_region(self, object):
-            car_brand = object.car.car_brand
-            sale_location = object.sale_location
-            return AdvertisementModel.avg_price_by_brand_in_region(car_brand, sale_location)
+    def get_avg_price_in_region(self, object):
+        car_brand = object.car.car_brand
+        sale_location = object.sale_location
+        return AdvertisementModel.avg_price_by_brand_in_region(car_brand, sale_location)
 
-        def get_avg_price_in_uk(self, object):
-            car_brand = object.car.car_brand
-            return AdvertisementModel.avg_price_by_region(car_brand)
+    def get_avg_price_in_uk(self, object):
+        car_brand = object.car.car_brand
+        return AdvertisementModel.avg_price_by_region(car_brand)
 
+    @atomic
     def create(self, validated_data: dict):
-        pass
+
+        request = self.context.get('request')
+        seller = request.user.profile
+
+        car_data = validated_data.pop('car',)
+        car, created = CarModel.objects.get_or_create(**car_data)
+
+        adv = AdvertisementModel.objects.create(seller=seller,
+                                          car=car,
+                                          **validated_data)
+        return adv
 
     def update(self, instance, validated_data: dict):
         pass
