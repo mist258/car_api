@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from apps.users.manager import UserCustomManager
 from core.models import BaseModel
 
+from .choices_user.user_choices import AccountType, UserRoleType
+
 
 class UserCustomModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     class Meta:
@@ -26,11 +28,6 @@ class UserCustomModel(AbstractBaseUser, PermissionsMixin, BaseModel):
 
 class UserProfile(BaseModel):
 
-    ACCOUNT_TYPES = (
-        ('basic', 'basic'),
-        ('premium', 'premium'),
-    )
-
     class Meta:
         db_table = 'user_profile'
         ordering = ['id']
@@ -45,6 +42,15 @@ class UserProfile(BaseModel):
                                     error_messages=_('Phone number is invalid'))
     age = models.IntegerField(validators=[validators.MinValueValidator(18), validators.MaxValueValidator(90)],
                               error_messages=_('Age must be between 18 and 90'))
-    is_seller = models.BooleanField(default=False)
-    account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPES, default='basic')
+    role_type = models.CharField(max_length=6, choices=UserRoleType.choices)
+    account_type = models.CharField(max_length=7, choices=AccountType.choices, default='basic')
     user = models.OneToOneField(UserCustomModel, on_delete=models.CASCADE, related_name='profile')
+
+    def is_seller(self):
+        return self.role_type == 'seller'
+
+    def is_buyer(self):
+        return self.role_type == 'buyer'
+
+    def is_premium(self):
+        return self.account_type == 'premium'

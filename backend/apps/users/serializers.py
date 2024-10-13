@@ -17,10 +17,9 @@ class ProfileSerializer(serializers.ModelSerializer):
                   'phone_number',
                   'age',
                   'account_type',
-                  'is_seller',
                   'created_at',
+                  'role_type',
                   'updated_at',
-                  'is_seller',
                     )
 
 

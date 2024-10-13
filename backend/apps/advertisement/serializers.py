@@ -48,6 +48,13 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             car_brand = object.car.car_brand
             return AdvertisementModel.avg_price_by_region(car_brand)
 
+    def create(self, validated_data: dict):
+        pass
+
+    def update(self, instance, validated_data: dict):
+        pass
+
+
 class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
     seller_profile = ProfileSerializer()
 
