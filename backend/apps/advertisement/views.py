@@ -1,9 +1,11 @@
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from apps.advertisement.models import AdvertisementModel
 from apps.advertisement.serializers import AdvertisementSerializer
+from apps.users.serializers import UserSerializer
 
 
 class AdvertisementCreateView(CreateAPIView): # create advertisement
@@ -11,7 +13,6 @@ class AdvertisementCreateView(CreateAPIView): # create advertisement
     permission_classes = (IsAuthenticated,)
 
     def post(self, *args, **kwargs):
-        # user = self.request.user
         data = self.request.data
         serializer = self.serializer_class(data=data, context={'request': self.request})
         serializer.is_valid(raise_exception=True)
@@ -19,8 +20,11 @@ class AdvertisementCreateView(CreateAPIView): # create advertisement
         res_data = serializer.data
         return Response(res_data, status=status.HTTP_201_CREATED)
 
-class ShowAllUsersView(GenericAPIView):
-    serializer_class = ...
+class ShowAllUsersAdvView(ListAPIView):
+    serializer_class = AdvertisementSerializer
+    queryset = AdvertisementModel.objects.all()
+    permission_classes = (IsAuthenticated,)
 
-
-
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        return AdvertisementModel.objects.filter(pk=pk)
