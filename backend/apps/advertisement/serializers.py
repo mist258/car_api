@@ -1,4 +1,5 @@
 from django.db.transaction import atomic
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -18,13 +19,13 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AdvertisementModel
-        fields = ('id',
+        fields = ('seller',
+                  'id',
                   'price',
                   'currency',
                   'sale_location',
                   'photo',
                   'is_active',
-                  'seller',
                   'car_additional_describe',
                   'car',
                   'statistic',
@@ -54,14 +55,24 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         seller = request.user.profile
 
+        if seller.role_type == 'seller':
+
+            if seller.account_type == 'basic':
+
+                advertisement = AdvertisementModel.objects.filter(seller=seller).count()
+                if advertisement >= 1:
+                    raise ValidationError(_('You should have premium subscription to publish more, then 1 advertisement'))
+        else:
+            raise ValidationError(_('Only authenticated seller can create advertisement'))
+
         car_data = validated_data.pop('car',)
         car, created = CarModel.objects.get_or_create(**car_data)
 
-        adv = AdvertisementModel.objects.create(seller=seller,
-                                          car=car,
-                                          **validated_data)
-        return adv
+        return AdvertisementModel.objects.create(seller=seller, car=car, **validated_data)
 
+
+
+    @atomic
     def update(self, instance, validated_data: dict):
         pass
 

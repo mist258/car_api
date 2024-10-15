@@ -35,6 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'is_blocked',
                   'is_staff',
                   'is_superuser',
+                  'is_seller',
                   'last_login',
                   'created_at',
                   'updated_at',
@@ -59,8 +60,13 @@ class UserSerializer(serializers.ModelSerializer):
         
     @atomic
     def create(self, validated_data: dict):
+
         profile = validated_data.pop('profile')
+        role = profile.get('role_type')
         user = UserModel.objects.create_user(**validated_data)
+        if role == 'seller':
+            user.is_seller = True
+        user.save()
         UserProfile.objects.create(user=user, **profile)
         return user
 

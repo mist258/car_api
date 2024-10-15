@@ -1,16 +1,17 @@
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.advertisement.models import AdvertisementModel
 from apps.advertisement.serializers import AdvertisementSerializer
-from apps.users.serializers import UserSerializer
+from apps.users.models import UserProfile
+from core.permissions.is_seller import IsUserSeller
 
 
-class AdvertisementCreateView(CreateAPIView): # create advertisement
+class AdvertisementCreateView(CreateAPIView): # create advertisement for auth user
     serializer_class = AdvertisementSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
 
     def post(self, *args, **kwargs):
         data = self.request.data
@@ -23,8 +24,10 @@ class AdvertisementCreateView(CreateAPIView): # create advertisement
 class ShowAllUsersAdvView(ListAPIView):
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsUserSeller,)
 
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return AdvertisementModel.objects.filter(pk=pk)
+        user_profile = UserProfile.objects.get(user=self.request.user)
+
+        queryset = AdvertisementModel.objects.filter(seller=user_profile).select_related('car',)
+        return queryset

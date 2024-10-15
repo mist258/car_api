@@ -12,7 +12,7 @@ from .choices_adv.adv_choices import AdvCurrencyChoices, AdvRegionChoices
 
 class StatisticAdvertisementModel(BaseModel):
     class Meta:
-        db_table = "advertisement"
+        db_table = "statistic_adv"
 
     general_views = models.IntegerField(default=0)
     day_views = models.IntegerField(default=0)
@@ -29,7 +29,7 @@ class StatisticAdvertisementModel(BaseModel):
 
 class AdvertisementModel(models.Model):
     class Meta:
-        db_table = "statistic_advertisement"
+        db_table = "advertisement"
         ordering = ["id"]
 
     seller = models.ForeignKey(UserProfile,

@@ -4,5 +4,5 @@ from .views import AdvertisementCreateView, ShowAllUsersAdvView
 
 urlpatterns = [
     path('/posts', AdvertisementCreateView.as_view(), name='advertisement'),
-    path('/<int:pk>/list', ShowAllUsersAdvView.as_view(), name='list-adv' ),
+    path('/listing', ShowAllUsersAdvView.as_view(), name='list-adv' ),
 ]
