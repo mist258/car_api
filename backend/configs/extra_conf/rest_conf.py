@@ -9,5 +9,8 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': [
         'core.permissions.is_superuser_permission.IsSuperUser',
-    ]
+    ],
+
+    'DEFAULT_PAGINATION_CLASS': 'core.paginations.PagePagination',
+
 }

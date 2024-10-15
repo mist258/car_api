@@ -58,8 +58,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         if seller.role_type == 'seller':
 
             if seller.account_type == 'basic':
-
                 advertisement = AdvertisementModel.objects.filter(seller=seller).count()
+
                 if advertisement >= 1:
                     raise ValidationError(_('You should have premium subscription to publish more, then 1 advertisement'))
         else:
@@ -71,10 +71,19 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         return AdvertisementModel.objects.create(seller=seller, car=car, **validated_data)
 
 
-
     @atomic
     def update(self, instance, validated_data: dict):
-        pass
+        data = validated_data.pop('car')
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+
+        if data:
+            car_instance = instance.car
+            for key, value in data.items():
+                setattr(car_instance, key, value)
+
+        instance.save()
+        return instance
 
 
 class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
