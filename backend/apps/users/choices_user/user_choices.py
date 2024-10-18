@@ -6,6 +6,6 @@ class AccountType(models.TextChoices):
     BASIC = 'Basic', 'Basic'
 
 class UserRoleType(models.TextChoices):
-    SELLER = 'seller', 'Seller'
-    BUYER = 'buyer', 'Buyer'
-    OTHER = 'other', 'Other'
+    SELLER = 'seller', 'seller'
+    BUYER = 'buyer', 'buyer'
+    OTHER = 'other', 'other'

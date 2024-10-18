@@ -85,6 +85,18 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class AdvAddCarPhotoSerializer(serializers.Serializer):
+
+    class Meta:
+        model = AdvertisementModel
+        fields = ('photo',)
+
+        extra_kwargs = {
+            'photo':{
+                'required': True
+            }
+        }
+
 
 class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
     seller_profile = ProfileSerializer()

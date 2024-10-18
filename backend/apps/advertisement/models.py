@@ -6,6 +6,7 @@ from django.utils import timezone
 from apps.car.models import CarModel
 from apps.users.models import UserProfile
 from core.models import BaseModel
+from core.services.file_service import FileService
 
 from .choices_adv.adv_choices import AdvCurrencyChoices, AdvRegionChoices
 
@@ -49,9 +50,8 @@ class AdvertisementModel(models.Model):
                                      blank=False,
                                      null=False,
                                      max_length=20)
-    photo = models.ImageField(upload_to="advertisement/%Y/%m/%d/",
-                              blank=True,
-                              null=True,)
+    photo = models.ImageField(upload_to=FileService.upload_file,
+                              blank=True,)
     photo_count = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     car_additional_describe = models.TextField(max_length=200,
