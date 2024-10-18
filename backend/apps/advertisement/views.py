@@ -1,8 +1,9 @@
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from apps.advertisement.filters import AdvertisementFilter
 from apps.advertisement.models import AdvertisementModel
 from apps.advertisement.serializers import AdvertisementSerializer
 from apps.users.models import UserProfile
@@ -72,3 +73,24 @@ class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
         car.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class ShowAdvertisementListView(ListAPIView):  # +
+    serializer_class = AdvertisementSerializer
+    queryset = AdvertisementModel.objects.all()
+    filterset_class = AdvertisementFilter
+    permission_classes = (AllowAny,)
+
+
+class AdvCarAddPhotoView(UpdateAPIView):
+    pass
+
+
+class AdvCarRemovePhotoView(DestroyAPIView):
+    pass
+
+
+class ActivateAdvertisementView(UpdateAPIView):
+    pass
+
+
+class DeactivateAdvertisementView(UpdateAPIView):
+    pass

@@ -36,6 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'is_staff',
                   'is_superuser',
                   'is_seller',
+                  'is_buyer',
                   'last_login',
                   'created_at',
                   'updated_at',
@@ -66,6 +67,8 @@ class UserSerializer(serializers.ModelSerializer):
         user = UserModel.objects.create_user(**validated_data)
         if role == 'seller':
             user.is_seller = True
+        if role == 'buyer':
+            user.is_buyer = True
         user.save()
         UserProfile.objects.create(user=user, **profile)
         return user

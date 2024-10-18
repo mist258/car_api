@@ -20,6 +20,7 @@ class UserCustomModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     is_blocked = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)
+    is_buyer = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
