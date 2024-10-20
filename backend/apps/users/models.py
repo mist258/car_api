@@ -16,7 +16,7 @@ class UserCustomModel(AbstractBaseUser, PermissionsMixin, BaseModel):
         ordering = ['id']
 
     email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_blocked = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)

@@ -87,11 +87,3 @@ class UserToManagerView(GenericAPIView): # make user manager
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-
-class TestEmailView(GenericAPIView):
-
-    permission_classes = [AllowAny]
-    def get(self, *args, **kwargs):
-        EmailService.send_test()
-        return Response(status=status.HTTP_200_OK)
-

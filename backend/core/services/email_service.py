@@ -3,6 +3,8 @@ import os
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
+from core.services.jwt_service import ActivateToken, JWTService
+
 
 class EmailService:
 
@@ -15,5 +17,10 @@ class EmailService:
         msg.send()
 
     @classmethod
-    def send_test(cls):
-        cls.__send_email('natalia.kolchuk@gmail.com', 'test.html', {}, subject='Test Email')
+    def register(cls, user):
+        token = JWTService.create_token(user, ActivateToken)
+        url = f'http://localhost:3000/recovery/{token}'
+        cls.__send_email(user.email,
+                         'register.html',
+                         {'name':user.profile.first_name, 'url':url},
+                         'Register email')
