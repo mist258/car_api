@@ -8,10 +8,25 @@ from apps.car.models import CarModel
 from apps.users.serializers import ProfileSerializer
 
 from ..car.serializers import CarModelSerializer
-from .models import AdvertisementModel, StatisticAdvertisementModel
+from .models import AdvertisementModel, CarPhotoModel, StatisticAdvertisementModel
+
+
+class AdvAddCarPhotoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CarPhotoModel
+        fields = ('car_photo',)
+
+        extra_kwargs = {
+            'car_photo':
+                {
+                    'required': False
+                }
+        }
 
 
 class AdvertisementSerializer(serializers.ModelSerializer):
+    car_photo = AdvAddCarPhotoSerializer(many=True, read_only=True)
     car = CarModelSerializer()
     seller = ProfileSerializer(read_only=True)
     avg_price_in_region = serializers.SerializerMethodField()
@@ -24,8 +39,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                   'price',
                   'currency',
                   'sale_location',
-                  'photo',
                   'is_active',
+                  'car_photo',
                   'car_additional_describe',
                   'car',
                   'statistic',
@@ -84,19 +99,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-class AdvAddCarPhotoSerializer(serializers.Serializer):
-
-    class Meta:
-        model = AdvertisementModel
-        fields = ('photo',)
-
-        extra_kwargs = {
-            'photo':{
-                'required': True
-            }
-        }
-
 
 class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
     seller_profile = ProfileSerializer()

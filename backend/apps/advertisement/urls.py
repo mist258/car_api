@@ -17,5 +17,4 @@ urlpatterns = [
     path('/adv-listing', ShowAdvertisementListView.as_view(), name='adv-list-adv'), # +
     path('/<int:pk>/photo', AdvCarAddPhotoView.as_view(), name= 'add-photo')
 
-
 ]

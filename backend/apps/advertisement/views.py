@@ -1,6 +1,7 @@
+from importlib.resources import files
+
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
-from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView, GenericAPIView, ListAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -81,29 +82,23 @@ class ShowAdvertisementListView(ListAPIView):  # show all advertisements
     permission_classes = (AllowAny,)
 
 
-class AdvCarAddPhotoView(UpdateAPIView):
+class AdvCarAddPhotoView(GenericAPIView):
     serializer_class = AdvAddCarPhotoSerializer
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsUserSeller,)
 
-    def perform_update(self, request, *args, **kwargs):
+    def put(self, *args, **kwargs):
+        file_photo = self.request.FILES
         adv = self.get_object()
-        max_photo = 5
+        for index in file_photo:
+            serializer = AdvAddCarPhotoSerializer(data={'photo': file_photo[index]})
+            serializer.is_valid(raise_exception=True)
+            serializer.save(adv=adv)
+        adv_serializer = AdvertisementSerializer(adv)
+        return Response(adv_serializer.data, status=status.HTTP_200_OK)
 
-        if adv.photo_count >= max_photo:
-            raise ValidationError(f'You can not add more than {max_photo} photos')
 
-        serializer = self.get_serializer(adv, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
 
-        photo = serializer.validated_data.get('photo')
-
-        if photo:
-            adv.photo = photo
-            adv.photo_count +=1
-            adv.save()
-
-        return Response(self.get_serializer(adv).data, status=status.HTTP_200_OK)
 
 
 class AdvCarRemovePhotoView(DestroyAPIView):

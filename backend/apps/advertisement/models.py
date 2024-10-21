@@ -50,8 +50,6 @@ class AdvertisementModel(models.Model):
                                      blank=False,
                                      null=False,
                                      max_length=20)
-    photo = models.ImageField(upload_to=FileService.upload_file,
-                              blank=True,)
     photo_count = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     car_additional_describe = models.TextField(max_length=200,
@@ -61,6 +59,7 @@ class AdvertisementModel(models.Model):
                                      related_name="statistic",
                                      blank=True,
                                      null=True,)
+
 
     @classmethod
     def avg_price_by_brand_in_region(cls, car_brand, sale_location):
@@ -77,4 +76,13 @@ class AdvertisementModel(models.Model):
             .aggregate(avg_price=Avg('price'))['avg_price']
         )
         return avg_price or 0
-    
+
+
+class CarPhotoModel(BaseModel):
+    class Meta:
+        db_table = "car_photo"
+
+    car_photo = models.ImageField(upload_to=FileService.upload_file,
+                                    blank=True,
+                                    null=True)
+    adv_car = models.ForeignKey(AdvertisementModel, on_delete=models.CASCADE, related_name="car_photo",)

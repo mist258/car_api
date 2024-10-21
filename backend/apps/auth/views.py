@@ -13,7 +13,7 @@ from .serializers import EmailSerializer, PasswordSerializer
 
 User = get_user_model()
 
-class ActivationUserView(GenericAPIView):
+class ActivationUserView(GenericAPIView): # users activation
     permission_classes = (AllowAny,)
 
     def patch(self, *args, **kwargs):
@@ -25,7 +25,7 @@ class ActivationUserView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class RecoveryPasswordRequestView(GenericAPIView):
+class RecoveryPasswordRequestView(GenericAPIView): # request for recovery password
     permission_classes = (AllowAny,)
     serializer_class = EmailSerializer
 
@@ -37,7 +37,7 @@ class RecoveryPasswordRequestView(GenericAPIView):
         EmailService.recovery(user)
         return Response({'detail: check your email'}, status.HTTP_200_OK)
 
-class RecoveryPasswordView(GenericAPIView):
+class RecoveryPasswordView(GenericAPIView): #  recovery password
     permission_classes = (AllowAny,)
     serializer_class = PasswordSerializer
 

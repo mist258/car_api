@@ -2,13 +2,12 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from apps.users.models import UserProfile
 from apps.users.serializers import ProfileSerializer, UserSerializer
 from core.permissions.is_superuser_permission import IsSuperUser
-from core.services.email_service import EmailService
 
 UserModel = get_user_model()
 
@@ -87,3 +86,13 @@ class UserToManagerView(GenericAPIView): # make user manager
 
         return Response(response_data, status=status.HTTP_200_OK)
 
+
+class GetMeView(GenericAPIView): # get my info
+    serializer_class = UserSerializer
+    queryset = UserModel.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get(self, *args, **kwargs):
+        user = self.request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
