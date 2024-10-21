@@ -19,7 +19,7 @@ class EmailService:
     @classmethod
     def register(cls, user):
         token = JWTService.create_token(user, ActivateToken)
-        url = f'http://localhost:3000/recovery/{token}'
+        url = f'http://localhost:3000/register/{token}'
         cls.__send_email(user.email,
                          'register.html',
                          {'name':user.profile.first_name, 'url':url},
