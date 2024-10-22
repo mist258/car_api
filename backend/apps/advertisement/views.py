@@ -1,12 +1,13 @@
-from importlib.resources import files
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView, DestroyAPIView, GenericAPIView, ListAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from apps.advertisement.filters import AdvertisementFilter
-from apps.advertisement.models import AdvertisementModel
+from apps.advertisement.models import AdvertisementModel, CarPhotoModel
 from apps.advertisement.serializers import AdvAddCarPhotoSerializer, AdvertisementSerializer
 from apps.users.models import UserProfile
 from core.permissions.is_seller import IsUserSeller
@@ -77,32 +78,49 @@ class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
 
 class ShowAdvertisementListView(ListAPIView):  # show all advertisements
     serializer_class = AdvertisementSerializer
-    queryset = AdvertisementModel.objects.all()
     filterset_class = AdvertisementFilter
     permission_classes = (AllowAny,)
 
+    def get_queryset(self):
+        return AdvertisementModel.objects.all().select_related('car', 'seller')
 
-class AdvCarAddPhotoView(GenericAPIView):
+
+class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
     serializer_class = AdvAddCarPhotoSerializer
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsUserSeller,)
 
     def put(self, *args, **kwargs):
         file_photo = self.request.FILES
+        photo_amount = 10
         adv = self.get_object()
+        exist_photos = adv.car_photo.count()
+
+        if exist_photos + len(file_photo) > photo_amount:
+            raise ValidationError(_(f' You can not add more. Maximum photo is {photo_amount}. You already uploaded {exist_photos} photos'))
         for index in file_photo:
-            serializer = AdvAddCarPhotoSerializer(data={'photo': file_photo[index]})
+            serializer = AdvAddCarPhotoSerializer(data={'car_photo': file_photo[index]})
             serializer.is_valid(raise_exception=True)
-            serializer.save(adv=adv)
+            adv.photo_count += 1
+            serializer.save(adv_car=adv)
         adv_serializer = AdvertisementSerializer(adv)
         return Response(adv_serializer.data, status=status.HTTP_200_OK)
 
 
+class AdvCarRemovePhotoView(DestroyAPIView): # бага, але видаляє
+    queryset = CarPhotoModel.objects.all()
+    permission_classes = (IsUserSeller,)
 
+    def delete(self, *args, **kwargs):
+        photo = self.get_object()
 
+        if photo:
+            photo.delete()
 
-class AdvCarRemovePhotoView(DestroyAPIView):
-    pass
+            return Response(_(f'Photo have been successfully deleted'),status.HTTP_204_NO_CONTENT)
+
+        return Response(_('Photo not found'),status.HTTP_404_NOT_FOUND)
+
 
 
 class ActivateAdvertisementView(UpdateAPIView):
