@@ -107,7 +107,7 @@ class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
         return Response(adv_serializer.data, status=status.HTTP_200_OK)
 
 
-class AdvCarRemovePhotoView(DestroyAPIView): # бага, але видаляє
+class AdvCarRemovePhotoView(DestroyAPIView): # delete photo
     queryset = CarPhotoModel.objects.all()
     permission_classes = (IsUserSeller,)
 
