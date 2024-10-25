@@ -15,11 +15,11 @@ UserModel = get_user_model()
 class UserCreateView(CreateAPIView): # create new user
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
 
 
 class UserBlockView(GenericAPIView): # block user
-    permission_classes = [IsSuperUser]
+    permission_classes = (IsSuperUser,)
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
@@ -37,7 +37,7 @@ class UserBlockView(GenericAPIView): # block user
 
 
 class UserUnblockView(GenericAPIView): # unblock user
-    permission_classes = [IsSuperUser]
+    permission_classes = (IsSuperUser,)
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
@@ -55,7 +55,7 @@ class UserUnblockView(GenericAPIView): # unblock user
 
 
 class UserToManagerView(GenericAPIView): # make user manager
-    permission_classes = [IsSuperUser]
+    permission_classes = (IsSuperUser,)
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
@@ -90,7 +90,7 @@ class UserToManagerView(GenericAPIView): # make user manager
 class GetMeView(GenericAPIView): # get my info
     serializer_class = UserSerializer
     queryset = UserModel.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def get(self, *args, **kwargs):
         user = self.request.user

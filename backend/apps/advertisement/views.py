@@ -1,3 +1,6 @@
+from datetime import datetime
+from decimal import Decimal
+
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
@@ -6,6 +9,7 @@ from rest_framework.generics import CreateAPIView, DestroyAPIView, GenericAPIVie
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+import requests
 from apps.advertisement.filters import AdvertisementFilter
 from apps.advertisement.models import AdvertisementModel, CarPhotoModel
 from apps.advertisement.serializers import AdvAddCarPhotoSerializer, AdvertisementSerializer
@@ -121,7 +125,76 @@ class AdvCarRemovePhotoView(DestroyAPIView): # delete photo
 
         return Response(_('Photo not found'),status.HTTP_404_NOT_FOUND)
 
+class CurrencyConverterView(GenericAPIView): # convert price
+    queryset = AdvertisementModel.objects.all()
+    serializer_class = AdvertisementSerializer
+    permission_classes = (AllowAny,)
 
+    def get_exchange_rates(self):
+        res = requests.get(
+            f'https://api.privatbank.ua/p24api/exchange_rates?date={
+            datetime.now().strftime('%d.%m.%Y')
+            }'
+        )
+
+        if res.status_code == 200:
+            data = res.json()
+            rates = {}
+
+            for rate in data['exchangeRate']:
+                if rate.get('currency') in ['USD', 'EUR']:
+                    rates[rate['currency']] = {
+                        'sale': Decimal(str(rate['saleRate'])),
+                        'purchase': Decimal(str(rate['purchaseRate'])),
+                    }
+
+            return rates
+
+        return None
+
+    def get(self, *args, **kwargs):
+        adv = self.get_object()
+
+        rates = self.get_exchange_rates()
+
+        if not rates:
+            return Response(_('Failed to get exchange rates'),status.HTTP_404_NOT_FOUND)
+
+        price = adv.price
+        original_currency = adv.currency
+
+        exchange_rates = {}
+
+        for curr, rate in rates.items():
+            exchange_rates[curr] = {
+                "sale": float(rate["sale"]),
+                "purchase": float(rate["purchase"]),
+            }
+
+        res = {
+            "original": {
+                "price": float(price),
+                "currency": original_currency,
+            },
+            "converted": {},
+            "exchange_rates": exchange_rates
+        }
+
+        if original_currency == "UAN":
+            res["converted"]["USD"] = float(price/rates["USD"]["sale"])
+            res["converted"]["EUR"] = float(price/rates["EUR"]["sale"])
+
+        if original_currency == "EUR":
+            price_in_uah = price * rates["EUR"]["purchase"]
+            res["converted"]["UAH"] = float(price_in_uah)
+            res["converted"]["USD"] = float(price_in_uah/rates["USD"]["sale"])
+
+        if original_currency == "USD":
+            price_in_uah = price * rates["USD"]["purchase"]
+            res["converted"]["UAH"] = float(price_in_uah)
+            res["converted"]["EUR"] = float(price_in_uah/rates["EUR"]["sale"])
+
+        return Response(res)
 
 class ActivateAdvertisementView(UpdateAPIView):
     pass

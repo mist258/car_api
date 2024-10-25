@@ -4,6 +4,7 @@ from .views import (
     AdvCarAddPhotoView,
     AdvCarRemovePhotoView,
     AdvertisementCreateView,
+    CurrencyConverterView,
     DestroyUserAdvView,
     ShowAdvertisementListView,
     ShowAllUsersAdvView,
@@ -18,5 +19,6 @@ urlpatterns = [
     path('/adv_listing', ShowAdvertisementListView.as_view(), name='adv-list-adv'), # +
     path('/<int:pk>/photo', AdvCarAddPhotoView.as_view(), name='add-photo'), # +
     path('/<int:pk>/remove_photo', AdvCarRemovePhotoView.as_view(), name='remove-photo'), # +
+    path('/<int:pk>/currencies_converter', CurrencyConverterView.as_view(), name='currency_converter'), # +
 
 ]
