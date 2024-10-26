@@ -103,7 +103,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         return instance
 
 class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
-    # seller_profile = ProfileSerializer()
 
     class Meta:
         model = StatisticAdvertisementModel

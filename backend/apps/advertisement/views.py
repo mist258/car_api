@@ -1,4 +1,3 @@
-from datetime import datetime
 from decimal import Decimal
 
 from django.utils.translation import gettext_lazy as _
@@ -16,13 +15,13 @@ from rest_framework.generics import (
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-import requests
 from apps.advertisement.filters import AdvertisementFilter
 from apps.advertisement.models import AdvertisementModel, CarPhotoModel
 from apps.advertisement.serializers import AdvAddCarPhotoSerializer, AdvertisementSerializer
 from apps.users.models import UserProfile
 from core.permissions.is_seller import IsUserSeller
 from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
+from core.services.currency_service import CurrencyService
 
 
 class AdvertisementCreateView(CreateAPIView): # create advertisement for auth user
@@ -50,7 +49,6 @@ class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advert
 
         queryset = AdvertisementModel.objects.filter(seller=user_profile).select_related('car',)
         return queryset
-
 
 class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own advertisement by id
 
@@ -146,32 +144,10 @@ class AdvCarRemovePhotoView(DestroyAPIView): # delete photo
         return Response(_('Photo not found'),status.HTTP_404_NOT_FOUND)
 
 
-class CurrencyConverterView(GenericAPIView): # convert price
+class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
     queryset = AdvertisementModel.objects.all()
     serializer_class = AdvertisementSerializer
     permission_classes = (AllowAny,)
-
-    def get_exchange_rates(self):
-        res = requests.get(
-            f'https://api.privatbank.ua/p24api/exchange_rates?date={
-            datetime.now().strftime('%d.%m.%Y')
-            }'
-        )
-
-        if res.status_code == 200:
-            data = res.json()
-            rates = {}
-
-            for rate in data['exchangeRate']:
-                if rate.get('currency') in ['USD', 'EUR']:
-                    rates[rate['currency']] = {
-                        'sale': Decimal(str(rate['saleRate'])),
-                        'purchase': Decimal(str(rate['purchaseRate'])),
-                    }
-
-            return rates
-
-        return None
 
     def get(self, *args, **kwargs):
         adv = self.get_object()
@@ -194,7 +170,7 @@ class CurrencyConverterView(GenericAPIView): # convert price
 
         res = {
             "original": {
-                "price": float(price),
+                "price": Decimal(price),
                 "currency": original_currency,
             },
             "converted": {},
@@ -202,18 +178,18 @@ class CurrencyConverterView(GenericAPIView): # convert price
         }
 
         if original_currency == "UAN":
-            res["converted"]["USD"] = float(price/rates["USD"]["sale"])
-            res["converted"]["EUR"] = float(price/rates["EUR"]["sale"])
+            res["converted"]["USD"] = Decimal(price/rates["USD"]["sale"])
+            res["converted"]["EUR"] = Decimal(price/rates["EUR"]["sale"])
 
         if original_currency == "EUR":
             price_in_uah = price * rates["EUR"]["purchase"]
-            res["converted"]["UAH"] = float(price_in_uah)
-            res["converted"]["USD"] = float(price_in_uah/rates["USD"]["sale"])
+            res["converted"]["UAH"] = Decimal(price_in_uah)
+            res["converted"]["USD"] = Decimal(price_in_uah/rates["USD"]["sale"])
 
         if original_currency == "USD":
             price_in_uah = price * rates["USD"]["purchase"]
-            res["converted"]["UAH"] = float(price_in_uah)
-            res["converted"]["EUR"] = float(price_in_uah/rates["EUR"]["sale"])
+            res["converted"]["UAH"] = Decimal(price_in_uah)
+            res["converted"]["EUR"] = Decimal(price_in_uah/rates["EUR"]["sale"])
 
         return Response(res)
 
@@ -221,6 +197,8 @@ class CurrencyConverterView(GenericAPIView): # convert price
 class ShowStatisticForPremiumAccountView(GenericAPIView):
     queryset = AdvertisementModel.objects.all()
     serializer_class = AdvertisementSerializer
+
+
 
 class ActivateAdvertisementView(UpdateAPIView):
     pass
