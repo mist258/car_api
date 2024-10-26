@@ -17,8 +17,13 @@ from rest_framework.response import Response
 
 from apps.advertisement.filters import AdvertisementFilter
 from apps.advertisement.models import AdvertisementModel, CarPhotoModel
-from apps.advertisement.serializers import AdvAddCarPhotoSerializer, AdvertisementSerializer
+from apps.advertisement.serializers import (
+    AdvAddCarPhotoSerializer,
+    AdvertisementSerializer,
+    PremiumAdvertisementSerializer,
+)
 from apps.users.models import UserProfile
+from core.permissions.is_premium import IsSellerPremium
 from core.permissions.is_seller import IsUserSeller
 from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 from core.services.currency_service import CurrencyService
@@ -39,15 +44,18 @@ class AdvertisementCreateView(CreateAPIView): # create advertisement for auth us
 
 
 class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advertisements
-
-    serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsUserSeller,)
+
+    def get_serializer_class(self):
+        if self.request.user.is_premium:
+            return PremiumAdvertisementSerializer
+        return AdvertisementSerializer
 
     def get_queryset(self):
         user_profile = UserProfile.objects.get(user=self.request.user)
 
-        queryset = AdvertisementModel.objects.filter(seller=user_profile).select_related('car',)
+        queryset = AdvertisementModel.objects.filter(seller=user_profile).select_related('car', 'seller')
         return queryset
 
 class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own advertisement by id
@@ -75,7 +83,7 @@ class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own adve
 
 class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
     serializer_class = AdvertisementSerializer
-    queryset = AdvertisementModel.objects.select_related('car', 'seller').all()
+    queryset = AdvertisementModel.objects.select_related('car', 'seller',).all()
     permission_classes = (AllowAny,)
 
     def get(self, *args, **kwargs):
@@ -194,9 +202,9 @@ class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
         return Response(res)
 
 
-class ShowStatisticForPremiumAccountView(GenericAPIView):
-    queryset = AdvertisementModel.objects.all()
-    serializer_class = AdvertisementSerializer
+class CountStatisticForPremiumAccountView(GenericAPIView):
+    pass
+
 
 
 

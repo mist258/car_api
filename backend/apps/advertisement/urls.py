@@ -8,7 +8,6 @@ from .views import (
     DestroyUserAdvView,
     ShowAdvertisementListView,
     ShowAllUsersAdvView,
-    ShowStatisticForPremiumAccountView,
     ShowUserAdvByIdView,
     UpdateUserAdvView,
 )
@@ -23,6 +22,5 @@ urlpatterns = [
     path('/<int:pk>/remove_photo', AdvCarRemovePhotoView.as_view(), name='remove-photo'), # +
     path('/<int:pk>/currencies_converter', CurrencyConverterView.as_view(), name='currency_converter'), # +
     path('/<int:pk>/seller_advert', ShowUserAdvByIdView.as_view(), name='seller-advert'), # +
-    path('/<int:pk>/statistic', ShowStatisticForPremiumAccountView.as_view(), name='statistic-for-premium-account'),
 
 ]

@@ -56,8 +56,7 @@ class AdvertisementModel(models.Model):
                                                null=False)
     statistic = models.OneToOneField(StatisticAdvertisementModel,on_delete=models.CASCADE,
                                      related_name="statistic",
-                                     blank=True,
-                                     null=True,)
+                                     blank=True, null=True)
 
 
     @classmethod

@@ -1,9 +1,13 @@
 from rest_framework.permissions import BasePermission
 
+from .is_seller import IsUserSeller
 
-class IsUserPremium(BasePermission):
+
+class IsSellerPremium(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user
-                    and request.user.is_premium
-                    and request.user.is_seller
-                    and request.user.is_active)
+        if not request.user:
+            return False
+
+        return bool(IsUserSeller().has_permission(request, view)
+                    and
+                    request.user.is_premium)

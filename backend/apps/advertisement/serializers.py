@@ -29,8 +29,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     car_photo = AdvAddCarPhotoSerializer(many=True, read_only=True)
     car = CarModelSerializer()
     seller = ProfileSerializer(read_only=True)
-    # avg_price_in_region = serializers.SerializerMethodField(read_only=True)
-    # avg_price_in_uk = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = AdvertisementModel
@@ -42,29 +40,11 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                   'is_active',
                   'car_photo',
                   'car_additional_describe',
-                  'car',
-                  # 'statistic',
-                  # 'avg_price_in_region',
-                  # 'avg_price_in_uk',
-                  )
+                  'car',)
 
         read_only_fields = ('seller',
                             'id',
-                            # 'avg_price_in_uk',
-                            # 'avg_price_in_region',
-                            # 'statistic',
                             'is_active',)
-
-    # return avg car's price in a certain region by car_brand and sale_region
-    def get_avg_price_in_region(self, object):
-        car_brand = object.car.car_brand
-        sale_location = object.sale_location
-        return AdvertisementModel.avg_price_by_brand_in_region(car_brand, sale_location)
-
-    # return avg car's price in Ukr by car_brand
-    def get_avg_price_in_uk(self, object):
-        car_brand = object.car.car_brand
-        return AdvertisementModel.avg_price_by_region(car_brand)
 
     @atomic
     def create(self, validated_data: dict):
@@ -102,6 +82,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -112,4 +93,36 @@ class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
                   'month_views',
                   'last_view_date',
                   'car_avg_price_in_uk',
-                  'car_avg_price_in_region')
+                  'car_avg_price_in_region',)
+
+
+class PremiumAdvertisementSerializer(AdvertisementSerializer):
+    statistic = StatisticAdvertisementModelSerializer(read_only=True)
+    avg_price_in_region = serializers.SerializerMethodField(read_only=True)
+    avg_price_in_uk = serializers.SerializerMethodField(read_only=True)
+
+    class Meta(AdvertisementSerializer.Meta):
+        model = AdvertisementModel
+        fields = AdvertisementSerializer.Meta.fields +(
+                  'statistic',
+                  'avg_price_in_region',
+                  'avg_price_in_uk',
+                  )
+
+        read_only_fields = (
+                            'avg_price_in_uk',
+                            'avg_price_in_region',
+                            'statistic',
+                            )
+
+    # return avg car's price in a certain region by car_brand and sale_region
+    def get_avg_price_in_region(self, object):
+        car_brand = object.car.car_brand
+        sale_location = object.sale_location
+        return AdvertisementModel.avg_price_by_brand_in_region(car_brand, sale_location)
+
+    # return avg car's price in Ukr by car_brand
+    def get_avg_price_in_uk(self, object):
+        car_brand = object.car.car_brand
+        return AdvertisementModel.avg_price_by_region(car_brand)
+
