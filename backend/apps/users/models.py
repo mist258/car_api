@@ -18,6 +18,7 @@ class UserCustomModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=False)
     is_blocked = models.BooleanField(default=False)
+    is_premium = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)
     is_buyer = models.BooleanField(default=False)
@@ -47,12 +48,3 @@ class UserProfile(BaseModel):
     role_type = models.CharField(max_length=6, choices=UserRoleType.choices)
     account_type = models.CharField(max_length=7, choices=AccountType.choices, default='basic')
     user = models.OneToOneField(UserCustomModel, on_delete=models.CASCADE, related_name='profile')
-
-    def is_seller(self):
-        return self.role_type == 'seller'
-
-    def is_buyer(self):
-        return self.role_type == 'buyer'
-
-    def is_premium(self):
-        return self.account_type == 'premium'

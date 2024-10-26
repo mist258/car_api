@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from apps.users.models import UserProfile
 from apps.users.serializers import ProfileSerializer, UserSerializer
+from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 from core.permissions.is_superuser_permission import IsSuperUser
 
 UserModel = get_user_model()
@@ -19,7 +20,7 @@ class UserCreateView(CreateAPIView): # create new user
 
 
 class UserBlockView(GenericAPIView): # block user
-    permission_classes = (IsSuperUser,)
+    permission_classes = (IsSuperUserOrIsStaff,)
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
@@ -37,7 +38,7 @@ class UserBlockView(GenericAPIView): # block user
 
 
 class UserUnblockView(GenericAPIView): # unblock user
-    permission_classes = (IsSuperUser,)
+    permission_classes = (IsSuperUserOrIsStaff,)
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)

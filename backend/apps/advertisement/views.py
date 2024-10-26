@@ -5,7 +5,14 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import CreateAPIView, DestroyAPIView, GenericAPIView, ListAPIView, UpdateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    GenericAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -15,6 +22,7 @@ from apps.advertisement.models import AdvertisementModel, CarPhotoModel
 from apps.advertisement.serializers import AdvAddCarPhotoSerializer, AdvertisementSerializer
 from apps.users.models import UserProfile
 from core.permissions.is_seller import IsUserSeller
+from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 
 
 class AdvertisementCreateView(CreateAPIView): # create advertisement for auth user
@@ -31,7 +39,7 @@ class AdvertisementCreateView(CreateAPIView): # create advertisement for auth us
         return Response(res_data, status=status.HTTP_201_CREATED)
 
 
-class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advertisement
+class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advertisements
 
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
@@ -44,7 +52,7 @@ class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advert
         return queryset
 
 
-class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own advertisement
+class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own advertisement by id
 
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
@@ -67,10 +75,23 @@ class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own adve
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
+    serializer_class = AdvertisementSerializer
+    queryset = AdvertisementModel.objects.select_related('car', 'seller').all()
+    permission_classes = (AllowAny,)
+
+    def get(self, *args, **kwargs):
+        adv = self.get_object()
+        serializer = AdvertisementSerializer(adv)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
 class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
-    permission_classes = (IsUserSeller,)
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
+    permission_classes = (IsUserSeller,
+                         IsSuperUserOrIsStaff,)
 
     def delete(self, *args, **kwargs):
         adv = self.get_object()
@@ -86,7 +107,7 @@ class ShowAdvertisementListView(ListAPIView):  # show all advertisements
     permission_classes = (AllowAny,)
 
     def get_queryset(self):
-        return AdvertisementModel.objects.all().select_related('car', 'seller')
+        return AdvertisementModel.objects.select_related('car', 'seller').all()
 
 
 class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
@@ -101,11 +122,10 @@ class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
         exist_photos = adv.car_photo.count()
 
         if exist_photos + len(file_photo) > photo_amount:
-            raise ValidationError(_(f' You can not add more. Maximum photo is {photo_amount}. You already uploaded {exist_photos} photos'))
+            raise ValidationError(_(f'You can not add more. Maximum photo is {photo_amount}. You already uploaded {exist_photos} photos'))
         for index in file_photo:
             serializer = AdvAddCarPhotoSerializer(data={'car_photo': file_photo[index]})
             serializer.is_valid(raise_exception=True)
-            adv.photo_count += 1
             serializer.save(adv_car=adv)
         adv_serializer = AdvertisementSerializer(adv)
         return Response(adv_serializer.data, status=status.HTTP_200_OK)
@@ -124,6 +144,7 @@ class AdvCarRemovePhotoView(DestroyAPIView): # delete photo
             return Response(_(f'Photo have been successfully deleted'),status.HTTP_204_NO_CONTENT)
 
         return Response(_('Photo not found'),status.HTTP_404_NOT_FOUND)
+
 
 class CurrencyConverterView(GenericAPIView): # convert price
     queryset = AdvertisementModel.objects.all()
@@ -163,13 +184,13 @@ class CurrencyConverterView(GenericAPIView): # convert price
         price = adv.price
         original_currency = adv.currency
 
-        exchange_rates = {}
-
-        for curr, rate in rates.items():
-            exchange_rates[curr] = {
-                "sale": float(rate["sale"]),
-                "purchase": float(rate["purchase"]),
-            }
+        # exchange_rates = {}
+        #
+        # for curr, rate in rates.items():
+        #     exchange_rates[curr] = {
+        #         "sale": float(rate["sale"]),
+        #         "purchase": float(rate["purchase"]),
+        #     }
 
         res = {
             "original": {
@@ -177,7 +198,7 @@ class CurrencyConverterView(GenericAPIView): # convert price
                 "currency": original_currency,
             },
             "converted": {},
-            "exchange_rates": exchange_rates
+            # "exchange_rates": exchange_rates
         }
 
         if original_currency == "UAN":
@@ -195,6 +216,11 @@ class CurrencyConverterView(GenericAPIView): # convert price
             res["converted"]["EUR"] = float(price_in_uah/rates["EUR"]["sale"])
 
         return Response(res)
+
+
+class ShowStatisticForPremiumAccountView(GenericAPIView):
+    queryset = AdvertisementModel.objects.all()
+    serializer_class = AdvertisementSerializer
 
 class ActivateAdvertisementView(UpdateAPIView):
     pass
