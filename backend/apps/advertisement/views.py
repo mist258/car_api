@@ -59,7 +59,6 @@ class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advert
         return queryset
 
 
-
 class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own advertisement by id
 
     serializer_class = AdvertisementSerializer
@@ -96,6 +95,7 @@ class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
         serializer = self.get_serializer(adv)
         return Response(serializer.data, status.HTTP_200_OK)
 
+
 class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
@@ -108,6 +108,7 @@ class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
         adv.delete()
         car.delete()
         return Response(status.HTTP_204_NO_CONTENT)
+
 
 class ShowAdvertisementListView(ListAPIView):  # show all advertisements
     serializer_class = AdvertisementSerializer

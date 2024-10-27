@@ -37,6 +37,7 @@ class RecoveryPasswordRequestView(GenericAPIView): # request for recovery passwo
         EmailService.recovery(user)
         return Response({'detail: check your email'}, status.HTTP_200_OK)
 
+
 class RecoveryPasswordView(GenericAPIView): #  recovery password
     permission_classes = (AllowAny,)
     serializer_class = PasswordSerializer
