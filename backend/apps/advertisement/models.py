@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.core import validators
 from django.db import models
 from django.db.models import Avg
@@ -19,13 +21,28 @@ class StatisticAdvertisementModel(BaseModel):
     day_views = models.IntegerField(default=0)
     week_views = models.IntegerField(default=0)
     month_views = models.IntegerField(default=0)
-    last_view_date = models.DateTimeField(default=timezone.now)
-    car_avg_price_in_region = models.DecimalField(max_digits=10,
-                                               decimal_places=3,
-                                               default=0)
-    car_avg_price_in_uk = models.DecimalField(max_digits=10,
-                                                decimal_places=3,
-                                                default=0)
+    last_view_date = models.DateTimeField(default=datetime.now)
+
+    def increment_counter(self, viewer_user, adv):
+
+        if viewer_user != adv.seller.user:
+            now = timezone.now()
+
+            if now.date() != self.last_view_date.date():
+                self.day_views = 0
+
+            if now - self.last_view_date < timedelta(days=7):
+                self.week_views = 0
+
+            if now - self.last_view_date < timedelta(days=30):
+                self.month_views = 0
+
+            self.general_views += 1
+            self.day_views += 1
+            self.week_views += 1
+            self.month_views += 1
+            self.last_view_date = now
+            self.save()
 
 
 class AdvertisementModel(models.Model):

@@ -11,10 +11,11 @@ from apps.car.choices_car.car_choices import (
     CarFuelTypeChoices,
     CarGearTypeChoices,
 )
+from core.models import BaseModel
 from django_countries.fields import CountryField
 
 
-class CarModel(models.Model):
+class CarModel(BaseModel):
 
     class Meta:
         db_table = "car"

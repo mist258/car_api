@@ -48,7 +48,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     @atomic
     def create(self, validated_data: dict):
-
         request = self.context.get('request')
         seller = request.user.profile
 
@@ -65,7 +64,13 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         car_data = validated_data.pop('car',)
         car, created = CarModel.objects.get_or_create(**car_data)
 
-        return AdvertisementModel.objects.create(seller=seller, car=car, **validated_data)
+        statistic = StatisticAdvertisementModel.objects.create()
+
+        advert = AdvertisementModel.objects.create(seller=seller,
+                                                          car=car,
+                                                          statistic=statistic,
+                                                          **validated_data)
+        return advert
 
 
     @atomic
@@ -84,6 +89,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
 
 class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
+    last_view_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
 
     class Meta:
         model = StatisticAdvertisementModel
@@ -91,15 +97,25 @@ class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
                   'day_views',
                   'week_views',
                   'month_views',
-                  'last_view_date',
-                  'car_avg_price_in_uk',
-                  'car_avg_price_in_region',)
+                  'last_view_date',)
 
 
 class PremiumAdvertisementSerializer(AdvertisementSerializer):
     statistic = StatisticAdvertisementModelSerializer(read_only=True)
     avg_price_in_region = serializers.SerializerMethodField(read_only=True)
     avg_price_in_uk = serializers.SerializerMethodField(read_only=True)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+
+        if not request.user == instance.seller.user:
+            data.pop('statistic')
+            data.pop('avg_price_in_region')
+            data.pop('avg_price_in_uk')
+
+        return data
+
 
     class Meta(AdvertisementSerializer.Meta):
         model = AdvertisementModel

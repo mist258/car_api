@@ -23,7 +23,6 @@ from apps.advertisement.serializers import (
     PremiumAdvertisementSerializer,
 )
 from apps.users.models import UserProfile
-from core.permissions.is_premium import IsSellerPremium
 from core.permissions.is_seller import IsUserSeller
 from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 from core.services.currency_service import CurrencyService
@@ -40,7 +39,7 @@ class AdvertisementCreateView(CreateAPIView): # create advertisement for auth us
         serializer.is_valid(raise_exception=True)
         serializer.save()
         res_data = serializer.data
-        return Response(res_data, status=status.HTTP_201_CREATED)
+        return Response(res_data, status.HTTP_201_CREATED)
 
 
 class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advertisements
@@ -55,8 +54,11 @@ class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advert
     def get_queryset(self):
         user_profile = UserProfile.objects.get(user=self.request.user)
 
-        queryset = AdvertisementModel.objects.filter(seller=user_profile).select_related('car', 'seller')
+        queryset = (AdvertisementModel.objects.filter(seller=user_profile).
+                    select_related('car', 'seller', 'statistic'))
         return queryset
+
+
 
 class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own advertisement by id
 
@@ -70,7 +72,7 @@ class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own adve
         serializer = self.serializer_class(adv, data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def patch(self, *args, **kwargs):
         data = self.request.data
@@ -78,7 +80,7 @@ class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own adve
         serializer = self.serializer_class(adv, data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
@@ -86,12 +88,13 @@ class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
     queryset = AdvertisementModel.objects.select_related('car', 'seller',).all()
     permission_classes = (AllowAny,)
 
-    def get(self, *args, **kwargs):
+    def retrieve(self, *args, **kwargs):
         adv = self.get_object()
-        serializer = AdvertisementSerializer(adv)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if adv.statistic:
+            adv.statistic.increment_counter(None, adv)
 
-
+        serializer = self.get_serializer(adv)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
     serializer_class = AdvertisementSerializer
@@ -101,11 +104,10 @@ class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
 
     def delete(self, *args, **kwargs):
         adv = self.get_object()
-
         car = adv.car
         adv.delete()
         car.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status.HTTP_204_NO_CONTENT)
 
 class ShowAdvertisementListView(ListAPIView):  # show all advertisements
     serializer_class = AdvertisementSerializer
@@ -134,7 +136,7 @@ class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
             serializer.is_valid(raise_exception=True)
             serializer.save(adv_car=adv)
         adv_serializer = AdvertisementSerializer(adv)
-        return Response(adv_serializer.data, status=status.HTTP_200_OK)
+        return Response(adv_serializer.data, status.HTTP_200_OK)
 
 
 class AdvCarRemovePhotoView(DestroyAPIView): # delete photo
@@ -202,15 +204,12 @@ class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
         return Response(res)
 
 
-class CountStatisticForPremiumAccountView(GenericAPIView):
-    pass
-
-
-
-
 class ActivateAdvertisementView(UpdateAPIView):
     pass
 
 
 class DeactivateAdvertisementView(UpdateAPIView):
     pass
+
+
+# todo view_counter, register as premium check view
