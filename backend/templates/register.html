@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <h1>Hello, {{ first_name }}</h1>
-    <h2>For activate account follow this <a href={{ url }}>link</a></h2>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    <h1 style="color: #333; font-size: 24px;">Hello, {{ first_name }}!</h1>
+    
+    <h2 style="color: #555; font-size: 18px; line-height: 1.5;">
+        To activate your account, please follow this <a href="{{ url }}" style="color: #007bff; text-decoration: none;">link</a>.
+    </h2>
+    
+    <p style="font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 10px; margin-top: 20px;">
+        This is an automated message. Please do not reply directly to this email.
+    </p>
+</div>
 {% endblock %}

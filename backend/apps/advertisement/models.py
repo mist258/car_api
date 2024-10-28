@@ -68,13 +68,13 @@ class AdvertisementModel(models.Model):
                                      null=False,
                                      max_length=20)
     is_active = models.BooleanField(default=True)
-    car_additional_describe = models.TextField(max_length=200,
+    car_additional_description = models.TextField(max_length=200,
                                                blank=False,
                                                null=False)
     statistic = models.OneToOneField(StatisticAdvertisementModel,on_delete=models.CASCADE,
                                      related_name="statistic",
                                      blank=True, null=True)
-
+    edit_attempts = models.IntegerField(default=0)
 
     @classmethod
     def avg_price_by_brand_in_region(cls, car_brand, sale_location):

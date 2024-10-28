@@ -2,13 +2,12 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from apps.users.serializers import UserModel, UserSerializer
 from core.services.email_service import EmailService
 from core.services.jwt_service import ActivateToken, JWTService, RecoveryToken
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import EmailSerializer, PasswordSerializer
 
@@ -36,7 +35,7 @@ class RecoveryPasswordRequestView(GenericAPIView): # request for recovery passwo
         serializer.is_valid(raise_exception=True)
         user = get_object_or_404(UserModel, **serializer.data)
         EmailService.recovery(user)
-        return Response({'detail: check your email'}, status.HTTP_200_OK)
+        return Response({'detail': 'check your email'}, status.HTTP_200_OK)
 
 
 class RecoveryPasswordView(GenericAPIView): #  recovery password
@@ -54,12 +53,12 @@ class RecoveryPasswordView(GenericAPIView): #  recovery password
         return Response({'detail':' your password has been changed'}, status.HTTP_200_OK)
 
 
-class LogoutView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, *args, **kwargs):
-        refresh_token = self.request.data["refresh_token"]
-        token = RefreshToken(refresh_token)
-        token.blacklist()
-        return Response({'detail': 'logged out'}, status.HTTP_200_OK)
+# class LogoutView(GenericAPIView):
+#     permission_classes = (IsAuthenticated,)
+#
+#     def post(self, *args, **kwargs):
+#         refresh_token = self.request.data["refresh_token"]
+#         token = RefreshToken(refresh_token)
+#         token.blacklist()
+#         return Response({'detail': 'logged out'}, status.HTTP_200_OK)
 

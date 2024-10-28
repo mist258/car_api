@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 
 from apps.car.models import CarModel
 from apps.users.serializers import ProfileSerializer
+from better_profanity import profanity
 
 from ..car.serializers import CarModelSerializer
 from .models import AdvertisementModel, CarPhotoModel, StatisticAdvertisementModel
@@ -39,12 +40,37 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                   'sale_location',
                   'is_active',
                   'car_photo',
-                  'car_additional_describe',
+                  'car_additional_description',
                   'car',)
 
         read_only_fields = ('seller',
                             'id',
-                            'is_active',)
+                            'is_active',
+                            'edit_attempts',)
+
+    def validate_car_additional_description(self, value):
+        if profanity.contains_profanity(value):
+            instance = self.instance
+
+            if instance:
+                if instance.edit_attempts >= 2:
+                    self._notify_admin(instance.id, value)
+                    raise ValidationError(_('Maximum edit attempts reached. '
+                                            'Advertisement sent for review.'))
+                instance.edit_attempts += 1
+                instance.save()
+
+                remaining = 2 - instance.edit_attempts
+                raise ValidationError(_(f'Inappropriate content detected. '
+                                        f'{remaining} attempts remaining.'))
+
+            raise ValidationError(_('Inappropriate content detected. '
+                                    'Please modify your description.'))
+
+        return value
+
+    def _notify_admin(self, adv_id, description):
+        pass
 
     @atomic
     def create(self, validated_data: dict):
@@ -57,19 +83,19 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                 advertisement = AdvertisementModel.objects.filter(seller=seller).count()
 
                 if advertisement >= 1:
-                    raise ValidationError(_('You should have premium subscription to publish more, then 1 advertisement'))
+                    raise ValidationError(_('You should have premium subscription to publish more, '
+                                            'then 1 advertisement'))
         else:
             raise ValidationError(_('Only authenticated seller can create advertisement'))
 
         car_data = validated_data.pop('car',)
         car, created = CarModel.objects.get_or_create(**car_data)
-
         statistic = StatisticAdvertisementModel.objects.create()
-
         advert = AdvertisementModel.objects.create(seller=seller,
-                                                          car=car,
-                                                          statistic=statistic,
-                                                          **validated_data)
+                                                   car=car,
+                                                   is_active=True,
+                                                   statistic=statistic,
+                                                   **validated_data)
         return advert
 
 
