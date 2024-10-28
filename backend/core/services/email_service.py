@@ -4,6 +4,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 from core.services.jwt_service import ActivateToken, JWTService, RecoveryToken
+from urllib3 import request
 
 
 class EmailService:
@@ -23,7 +24,7 @@ class EmailService:
         cls.__send_email(user.email,
                          'register.html',
                          {
-                             'name':user.profile.first_name,
+                             'first_name':user.profile.first_name,
                              'url':url
                          },
                          'Register email')
@@ -36,7 +37,7 @@ class EmailService:
         cls.__send_email(user.email,
                          'recovery.html',
                          {
-                             'name': user.profile.first_name,
+                             'first_name': user.profile.first_name,
                              'url':url
                          },
                          'Recovery email')
