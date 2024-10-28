@@ -171,13 +171,13 @@ class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
         price = adv.price
         original_currency = adv.currency
 
-        # exchange_rates = {}
-        #
-        # for curr, rate in rates.items():
-        #     exchange_rates[curr] = {
-        #         "sale": float(rate["sale"]),
-        #         "purchase": float(rate["purchase"]),
-        #     }
+        exchange_rates = {}
+
+        for curr, rate in rates.items():
+            exchange_rates[curr] = {
+                "sale": float(rate["sale"]),
+                "purchase": float(rate["purchase"]),
+            }
 
         res = {
             "original": {
@@ -185,7 +185,7 @@ class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
                 "currency": original_currency,
             },
             "converted": {},
-            # "exchange_rates": exchange_rates
+            "exchange_rates": exchange_rates
         }
 
         if original_currency == "UAN":
@@ -213,4 +213,4 @@ class DeactivateAdvertisementView(UpdateAPIView):
     pass
 
 
-# todo view_counter, register as premium check view
+# todo register as premium check view, create profanity
