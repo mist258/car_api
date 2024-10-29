@@ -49,32 +49,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                             'is_active',
                             'edit_attempts',)
 
-    def validate_car_additional_description(self, value):
-        if not profanity.contains_profanity(value):
-            return value
-
-        if not self.instance:
-            raise ValidationError(_('Inappropriate content detected. '
-                                'Please modify your description.'))
-
-        current_attempts = self.instance.edit_attempts
-
-        if current_attempts >= 2:
-            self.instance.is_active = False
-            self.instance.edit_attempts += 1
-            self.instance.save()
-
-            EmailCheckDescriptionService.notify_admin(self.instance, value)
-            raise ValidationError(_('Maximum edit attempts reached. '
-                                'Advertisement sent for review.'))
-
-        self.instance.edit_attempts += 1
-        self.instance.save()
-
-        remaining = 2 - self.instance.edit_attempts
-        raise ValidationError(_(f'Inappropriate content detected. '
-                            f'{remaining} attempts remaining.'))
-
 
     @atomic
     def create(self, validated_data: dict):
@@ -92,8 +66,27 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         else:
             raise ValidationError(_('Only authenticated seller can create advertisement'))
 
-        car_data = validated_data.pop('car',)
+        car_data = validated_data.pop('car', {})
+        description = validated_data.get('car_additional_description', '')
         car, created = CarModel.objects.get_or_create(**car_data)
+
+
+        if profanity.contains_profanity(description):
+            remaining = 2 - validated_data.get('edit_attempts', 0)
+
+            if remaining <= 0:
+                raise ValidationError(_('Maximum edit attempts reached. '
+                                        'Advertisement sent for review.'))
+            validated_data['edit_attempts'] = validated_data.get('edit_attempts', 0) + 1
+            advert = AdvertisementModel.objects.create(seller=seller,
+                                                       car=car,
+                                                       is_active=False,
+                                                       **validated_data)
+
+            EmailCheckDescriptionService.notify_admin(advert, description)
+
+            raise ValidationError(_(f'Inappropriate content detected. {remaining} attempts remaining.'))
+
         statistic = StatisticAdvertisementModel.objects.create()
         advert = AdvertisementModel.objects.create(seller=seller,
                                                    car=car,
