@@ -31,7 +31,6 @@ class EmailService:
                          },
                          'Register email')
 
-
     @classmethod
     def recovery(cls, user):
         token = JWTService.create_token(user, RecoveryToken)
@@ -44,46 +43,23 @@ class EmailService:
                          },
                          'Recovery email')
 
-
-class EmailCheckDescriptionService:
-
-    @staticmethod
-    def __send_email(to:str, template_name:str, context:dict, subject='') -> None:
-        try:
-            template = get_template(template_name)
-            html_content = template.render(context)
-            msg = EmailMultiAlternatives(subject=subject,
-                                     from_email=os.environ.get('EMAIL_HOST_USER'),
-                                     to=[to])
-            msg.attach_alternative(html_content, 'text/html')
-            msg.send()
-        except Exception as e:
-            print(e)
-            raise e
-
     @classmethod
     def notify_admin(cls, instance, description):
-        try:
-            admin_email = UserModel.objects.filter(is_active=True,
-                                               is_staff=True,).values_list('email', flat=True).first()
+        admin_email = UserModel.objects.filter(is_active=True,
+                                               is_staff=True, ).values_list('email', flat=True).first()
 
-            if not admin_email:
-                return
+        if not admin_email:
+            return
 
-            cls.__send_email(admin_email,
+        cls.__send_email(admin_email,
                          'additional_email_check.html',
                          {
-                          'advertisement_id': instance.id,
-                          'seller': instance.seller.user.email,
-                          'description': description,
-                          'edit_attempts': instance.edit_attempts + 1,
-                          'car_info': f'{instance.car.car_brand}, '
-                                       f'{instance.car.car_model}, '
-                                       f'{instance.car.vin_code}',
+                             'advertisement_id': instance.id,
+                             'seller': instance.seller.user.email,
+                             'description': description,
+                             'edit_attempts': instance.edit_attempts + 1,
+                             'car_info': f'{instance.car.car_brand}, '
+                                         f'{instance.car.car_model}, '
+                                         f'{instance.car.vin_code}',
                          },
                          'Need check user\'s email')
-
-        except Exception as e:
-            print(e)
-            raise e
-

@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from apps.car.models import CarModel
 from apps.users.serializers import ProfileSerializer
 from better_profanity import profanity
-from core.services.email_service import EmailCheckDescriptionService
+from core.services.email_service import EmailService
 
 from ..car.serializers import CarModelSerializer
 from .models import AdvertisementModel, CarPhotoModel, StatisticAdvertisementModel
@@ -83,7 +83,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                                                        is_active=False,
                                                        **validated_data)
 
-            EmailCheckDescriptionService.notify_admin(advert, description)
+            EmailService.notify_admin(advert, description)
 
             raise ValidationError(_(f'Inappropriate content detected. {remaining} attempts remaining.'))
 
@@ -99,6 +99,28 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     @atomic
     def update(self, instance, validated_data: dict):
         data = validated_data.pop('car')
+        description = validated_data.get('car_additional_description', '')
+
+        if profanity.contains_profanity(description):
+            current_attempts = instance.edit_attempts + 1
+            instance.edit_attempts = current_attempts
+
+
+            if current_attempts >= 3:
+                instance.is_active = False
+                instance.save()
+                EmailService.notify_admin(instance, description)
+                raise ValidationError(_('Maximum edit attempts reached. '))
+
+            remaining = 3 - current_attempts
+            instance.save()
+            EmailService.notify_admin(instance, description)
+            raise ValidationError(_(f'Inappropriate content detected. '
+                  f'You have {remaining} attempts remaining.'))
+
+        instance.edit_attempts = 0
+        instance.is_active = True
+
         for key, value in validated_data.items():
             setattr(instance, key, value)
 
@@ -164,4 +186,3 @@ class PremiumAdvertisementSerializer(AdvertisementSerializer):
     def get_avg_price_in_uk(self, object):
         car_brand = object.car.car_brand
         return AdvertisementModel.avg_price_by_region(car_brand)
-
