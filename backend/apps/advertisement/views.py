@@ -12,7 +12,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     UpdateAPIView,
 )
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from apps.advertisement.filters import AdvertisementFilter
@@ -31,7 +31,7 @@ from core.services.currency_service import CurrencyService
 class AdvertisementCreateView(CreateAPIView): # create advertisement for auth user
 
     serializer_class = AdvertisementSerializer
-    permission_classes = (IsAuthenticated, IsUserSeller )
+    permission_classes = (IsUserSeller, )
 
     def post(self, *args, **kwargs):
         data = self.request.data
@@ -85,6 +85,7 @@ class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own adve
 class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.select_related('car', 'seller',).all()
+    filterset_class = AdvertisementFilter
     permission_classes = (AllowAny,)
 
     def retrieve(self, *args, **kwargs):
@@ -111,12 +112,10 @@ class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
 
 
 class ShowAdvertisementListView(ListAPIView):  # show all advertisements
+    queryset = AdvertisementModel.objects.select_related('car', 'seller').filter(is_active=True)
     serializer_class = AdvertisementSerializer
     filterset_class = AdvertisementFilter
     permission_classes = (AllowAny,)
-
-    def get_queryset(self):
-        return AdvertisementModel.objects.select_related('car', 'seller').all()
 
 
 class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
@@ -140,7 +139,7 @@ class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
         return Response(adv_serializer.data, status.HTTP_200_OK)
 
 
-class AdvCarRemovePhotoView(DestroyAPIView): # delete photo
+class AdvCarRemovePhotoView(DestroyAPIView): # seller can delete photo
     queryset = CarPhotoModel.objects.all()
     permission_classes = (IsUserSeller,)
 
@@ -156,7 +155,7 @@ class AdvCarRemovePhotoView(DestroyAPIView): # delete photo
 
 
 class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
-    queryset = AdvertisementModel.objects.all()
+    queryset = AdvertisementModel.objects.filter(is_active=True)
     serializer_class = AdvertisementSerializer
     permission_classes = (AllowAny,)
 
@@ -205,12 +204,41 @@ class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
         return Response(res)
 
 
-class ActivateAdvertisementView(UpdateAPIView):
-    pass
+class ShowNonActivateAdvertisementView(ListAPIView): # show nonactive advert for admin
+    queryset = AdvertisementModel.objects.select_related('car', 'seller').filter(is_active=False)
+    serializer_class = AdvertisementSerializer
+    filterset_class = AdvertisementFilter
+    permission_classes = (IsSuperUserOrIsStaff,)
 
 
-class DeactivateAdvertisementView(UpdateAPIView):
-    pass
+class DeactivateAdvertisementView(UpdateAPIView): # deactivation advert
+    queryset = AdvertisementModel.objects.all()
+    serializer_class = AdvertisementSerializer
+    permission_classes = (IsAdminUser,)
+
+    def patch(self, *args, **kwargs):
+        adv = self.get_object()
+        if adv.is_active:
+            adv.is_active = False
+            adv.save()
+        serializer = AdvertisementSerializer(adv)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
-# todo register as premium check view, create profanity
+class ActivateAdvertisementView(UpdateAPIView): # activate nonactive adv
+    queryset = AdvertisementModel.objects.all()
+    serializer_class = AdvertisementSerializer
+    permission_classes = (IsAdminUser,)
+
+    def patch(self, *args, **kwargs):
+        adv = self.get_object()
+
+        if not adv.is_active:
+            adv.is_active = True
+            adv.save()
+
+        serializer = AdvertisementSerializer(adv)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+# todo register as premium check view // create service for 'check profanity' // add more views //
