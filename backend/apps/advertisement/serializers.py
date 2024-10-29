@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 from apps.car.models import CarModel
 from apps.users.serializers import ProfileSerializer
 from better_profanity import profanity
+from core.services.email_service import EmailCheckDescriptionService
 
 from ..car.serializers import CarModelSerializer
 from .models import AdvertisementModel, CarPhotoModel, StatisticAdvertisementModel
@@ -49,28 +50,31 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                             'edit_attempts',)
 
     def validate_car_additional_description(self, value):
-        if profanity.contains_profanity(value):
-            instance = self.instance
+        if not profanity.contains_profanity(value):
+            return value
 
-            if instance:
-                if instance.edit_attempts >= 2:
-                    self._notify_admin(instance.id, value)
-                    raise ValidationError(_('Maximum edit attempts reached. '
-                                            'Advertisement sent for review.'))
-                instance.edit_attempts += 1
-                instance.save()
-
-                remaining = 2 - instance.edit_attempts
-                raise ValidationError(_(f'Inappropriate content detected. '
-                                        f'{remaining} attempts remaining.'))
-
+        if not self.instance:
             raise ValidationError(_('Inappropriate content detected. '
-                                    'Please modify your description.'))
+                                'Please modify your description.'))
 
-        return value
+        current_attempts = self.instance.edit_attempts
 
-    def _notify_admin(self, adv_id, description):
-        pass
+        if current_attempts >= 2:
+            self.instance.is_active = False
+            self.instance.edit_attempts += 1
+            self.instance.save()
+
+            EmailCheckDescriptionService.notify_admin(self.instance, value)
+            raise ValidationError(_('Maximum edit attempts reached. '
+                                'Advertisement sent for review.'))
+
+        self.instance.edit_attempts += 1
+        self.instance.save()
+
+        remaining = 2 - self.instance.edit_attempts
+        raise ValidationError(_(f'Inappropriate content detected. '
+                            f'{remaining} attempts remaining.'))
+
 
     @atomic
     def create(self, validated_data: dict):

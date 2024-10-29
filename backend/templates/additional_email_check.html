@@ -9,18 +9,14 @@
     <h3>Details:</h3>
     <ul>
         <li><strong>Advertisement ID:</strong> {{ advertisement_id }}</li>
-        <li><strong>Seller Email:</strong> {{ seller}}</li>
-        <li><strong>Car:</strong> 
-            {{ car.car_brand }} 
-            {{ car.car_model }} 
-            {{ car.vin_code }}
-        </li>
-        <li><strong>Edit Attempts:</strong> {{ edit_attempts}}</li>
+        <li><strong>Seller Email:</strong> {{ seller }}</li>
+        <li><strong>Car:</strong> {{ car_info }} </li>
+        <li><strong>Edit Attempts:</strong> {{ edit_attempts }}</li>
     </ul>
 
     <h3>Flagged Description:</h3>
-    <p style="background-color: #f8f8f8; padding: 15px; border-left: 4px solid #ff4444;">
-        {{ car_additional_description }}
+    <p style="background-color: #f8f8f8; padding: 20px; border-left: 4px solid #ff4444;">
+        {{ description }}
     </p>
 
     <p>Please review this content and take appropriate action.</p>

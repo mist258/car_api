@@ -1,10 +1,12 @@
 import os
 
+from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 from core.services.jwt_service import ActivateToken, JWTService, RecoveryToken
-from urllib3 import request
+
+UserModel = get_user_model()
 
 
 class EmailService:
@@ -13,7 +15,7 @@ class EmailService:
     def __send_email(to:str, template_name:str, context:dict, subject='') -> None:
         template = get_template(template_name)
         html_content = template.render(context)
-        msg = EmailMultiAlternatives(subject=subject, from_email=os.environ.get('EMAIL_HOST_USER'), to=[to])
+        msg = EmailMultiAlternatives(subject=subject, from_email=os.environ.get('EMAIL_HOST_USER'), to=('natalia.kolchuk@gmail.com',))
         msg.attach_alternative(html_content, 'text/html')
         msg.send()
 
@@ -41,3 +43,38 @@ class EmailService:
                              'url':url
                          },
                          'Recovery email')
+
+
+class EmailCheckDescriptionService:
+
+    @staticmethod
+    def __send_email(to:str, template_name:str, context:dict, subject='') -> None:
+        template = get_template(template_name)
+        html_content = template.render(context)
+        msg = EmailMultiAlternatives(subject=subject,
+                                     from_email=os.environ.get('EMAIL_HOST_USER'),
+                                     to=[to])
+        msg.attach_alternative(html_content, 'text/html')
+        msg.send()
+
+    @classmethod
+    def notify_admin(cls, instance, description):
+        admin_email = UserModel.objects.filter(is_active=True,
+                                               is_staff=True,).values_list('email', flat=True).first()
+
+        if not admin_email:
+            return
+
+        cls.__send_email(admin_email,
+                         'additional_email_check.html',
+                         {
+                          'advertisement_id': instance.id,
+                           'seller': instance.seller.user.email,
+                          'description': description,
+                          'edit_attempts': instance.edit_attempts + 1,
+                           'car_info': f'{instance.car.car_brand}, '
+                                       f'{instance.car.car_model}, '
+                                       f'{instance.car.vin_code}',
+                         },
+                         'Need check user\'s email')
+
