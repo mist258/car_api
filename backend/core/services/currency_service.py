@@ -17,12 +17,12 @@ class CurrencyService:
             rates = {}
 
             for rate in data['exchangeRate']:
+
                 if rate.get('currency') in ['USD', 'EUR']:
                     rates[rate['currency']] = {
                         'sale': Decimal(str(rate['saleRate'])),
                         'purchase': Decimal(str(rate['purchaseRate'])),
                     }
-
             return rates
 
         return None

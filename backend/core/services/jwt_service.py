@@ -41,6 +41,3 @@ class JWTService:
         token_result.blacklist()
         user_id = token_result.payload.get('user_id')
         return get_object_or_404(UserModel, pk=user_id)
-
-
-
