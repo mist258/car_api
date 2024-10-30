@@ -1,4 +1,3 @@
-from django.db.models import F
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
 
@@ -9,6 +8,7 @@ from apps.car.models import CarModel
 from apps.users.serializers import ProfileSerializer
 from better_profanity import profanity
 from core.services.email_service import EmailService
+from core.services.profanity_service import CheckProfanityService
 
 from ..car.serializers import CarModelSerializer
 from .models import AdvertisementModel, CarPhotoModel, StatisticAdvertisementModel
@@ -98,23 +98,14 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         return advert
 
     @atomic
-    def update(self, instance, validated_data: dict):
+    def update(self, instance, validated_data: dict): # todo -> incorrect validation
         data = validated_data.pop('car')
         description = validated_data.get('car_additional_description', '')
 
-        if profanity.contains_profanity(description):
-            current_attempts = instance.edit_attempts
-            instance.edit_attempts = current_attempts + 1
-            instance.is_active = False
+        CheckProfanityService.check_profanity(instance, description)
 
-            if current_attempts >= 3:
-                instance.save()
-                EmailService.notify_admin(instance, description)
-                raise ValidationError(_(f'You have only 3 attempts to change advertisement.'
-                                        'Advertisement sent for review. '
-                                        'Maximum edit attempts reached.'))
-        else:
-            instance.is_active = True
+        if instance.edit_attempts >= 3:
+            raise ValidationError(_('Editing not allowed due to excessive profanity attempts.'))
 
         for key, value in validated_data.items():
             setattr(instance, key, value)
