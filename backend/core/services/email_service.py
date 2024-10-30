@@ -57,7 +57,6 @@ class EmailService:
                              'advertisement_id': instance.id,
                              'seller': instance.seller.user.email,
                              'description': description,
-                             'edit_attempts': instance.edit_attempts + 1,
                              'car_info': f'{instance.car.car_brand}, '
                                          f'{instance.car.car_model}, '
                                          f'{instance.car.vin_code}',

@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
 
@@ -42,12 +43,13 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                   'is_active',
                   'car_photo',
                   'car_additional_description',
+                  'edit_attempts',
                   'car',)
 
         read_only_fields = ('seller',
                             'id',
                             'is_active',
-                            'edit_attempts',)
+                            'edit_attempts')
 
 
     @atomic
@@ -95,31 +97,24 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                                                    **validated_data)
         return advert
 
-
     @atomic
     def update(self, instance, validated_data: dict):
         data = validated_data.pop('car')
         description = validated_data.get('car_additional_description', '')
 
         if profanity.contains_profanity(description):
-            current_attempts = instance.edit_attempts + 1
-            instance.edit_attempts = current_attempts
-
+            current_attempts = instance.edit_attempts
+            instance.edit_attempts = current_attempts + 1
+            instance.is_active = False
 
             if current_attempts >= 3:
-                instance.is_active = False
                 instance.save()
                 EmailService.notify_admin(instance, description)
-                raise ValidationError(_('Maximum edit attempts reached. '))
-
-            remaining = 3 - current_attempts
-            instance.save()
-            EmailService.notify_admin(instance, description)
-            raise ValidationError(_(f'Inappropriate content detected. '
-                  f'You have {remaining} attempts remaining.'))
-
-        instance.edit_attempts = 0
-        instance.is_active = True
+                raise ValidationError(_(f'You have only 3 attempts to change advertisement.'
+                                        'Advertisement sent for review. '
+                                        'Maximum edit attempts reached.'))
+        else:
+            instance.is_active = True
 
         for key, value in validated_data.items():
             setattr(instance, key, value)
