@@ -241,4 +241,4 @@ class ActivateAdvertisementView(UpdateAPIView): # activate nonactive adv
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-# todo register as premium check view // create service for 'check profanity' // add more views //
+# todo register as premium check view // create service for 'check profanity' // 
