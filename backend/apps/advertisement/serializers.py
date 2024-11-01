@@ -104,9 +104,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
         CheckProfanityService.check_profanity(instance, description)
 
-        if instance.edit_attempts >= 3:
-            raise ValidationError(_('Editing not allowed due to excessive profanity attempts.'))
-
         for key, value in validated_data.items():
             setattr(instance, key, value)
 

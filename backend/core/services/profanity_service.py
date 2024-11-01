@@ -15,7 +15,7 @@ class CheckProfanityService:
             instance.edit_attempts = current_attempts + 1
             instance.is_active = False
 
-            if current_attempts == 3:
+            if current_attempts == 2:
                 instance.save()
                 EmailService.notify_admin(instance, description)
                 raise ValidationError(_(f'You had only 3 attempts to change advertisement.'
@@ -23,8 +23,6 @@ class CheckProfanityService:
                                         'Maximum edit attempts reached.'))
 
         else:
-            instance.is_active = True if instance.edit_attempts < 3 else False
+            instance.is_active = True if instance.edit_attempts < 2 else False
 
         instance.save()
-
-
