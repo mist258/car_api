@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
@@ -8,11 +9,13 @@ from rest_framework.response import Response
 from apps.users.serializers import UserModel, UserSerializer
 from core.services.email_service import EmailService
 from core.services.jwt_service import ActivateToken, JWTService, RecoveryToken
+from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import EmailSerializer, PasswordSerializer
 
 User = get_user_model()
 
+@method_decorator(name='patch', decorator=swagger_auto_schema(security=[], operation_summary='activate nonactive user by id ', operation_id='activate user'))
 class ActivationUserView(GenericAPIView):
     '''
         activate user account
@@ -30,6 +33,7 @@ class ActivationUserView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
+@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_summary='get recovery password request from user ', operation_id='recovery password request'))
 class RecoveryPasswordRequestView(GenericAPIView):
     '''
         a password reset request
@@ -47,6 +51,7 @@ class RecoveryPasswordRequestView(GenericAPIView):
         return Response({'detail': 'check your email'}, status.HTTP_200_OK)
 
 
+@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_summary='make recovery password from user ', operation_id='recovery password'))
 class RecoveryPasswordView(GenericAPIView):
     '''
         recovery password
@@ -64,4 +69,3 @@ class RecoveryPasswordView(GenericAPIView):
         user.set_password(serializer.data['password'])
         user.save()
         return Response({'detail':' your password has been changed'}, status.HTTP_200_OK)
-

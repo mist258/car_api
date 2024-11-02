@@ -51,8 +51,9 @@ class UserSerializer(serializers.ModelSerializer):
                             'last_login',
                             'is_active',
                             'is_blocked',
-                            'is_superuser',
                             'is_staff',
+                            'is_seller',
+                            'is_buyer',
                             'is_superuser',)
 
         extra_kwargs = {
