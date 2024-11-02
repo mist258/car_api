@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -9,6 +9,8 @@ from apps.users.models import UserProfile
 from apps.users.serializers import ProfileSerializer, UserSerializer
 from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 from core.permissions.is_superuser_permission import IsSuperUser
+
+from .filters import UserFilter
 
 UserModel = get_user_model()
 
@@ -96,4 +98,15 @@ class GetMeView(GenericAPIView): # get my info
     def get(self, *args, **kwargs):
         user = self.request.user
         serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+class ShowAllUsersView(ListAPIView): # admin can get and filter users
+    serializer_class = UserSerializer
+    filterset_class = UserFilter
+    permission_classes = (IsSuperUserOrIsStaff,)
+
+    def get_queryset(self):
+        return UserModel.objects.exclude(pk=self.request.user.id).select_related('profile')
+
+

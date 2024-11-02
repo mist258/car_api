@@ -51,7 +51,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                             'is_active',
                             'edit_attempts')
 
-
     @atomic
     def create(self, validated_data: dict):
         request = self.context.get('request')
@@ -71,7 +70,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         car_data = validated_data.pop('car', {})
         description = validated_data.get('car_additional_description', '')
         car, created = CarModel.objects.get_or_create(**car_data)
-
 
         if profanity.contains_profanity(description):
             remaining = 2 - validated_data.get('edit_attempts', 0)
@@ -98,7 +96,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         return advert
 
     @atomic
-    def update(self, instance, validated_data: dict): # todo -> incorrect validation
+    def update(self, instance, validated_data: dict):
         data = validated_data.pop('car')
         description = validated_data.get('car_additional_description', '')
 
@@ -169,3 +167,4 @@ class PremiumAdvertisementSerializer(AdvertisementSerializer):
     def get_avg_price_in_uk(self, object):
         car_brand = object.car.car_brand
         return AdvertisementModel.avg_price_by_region(car_brand)
+

@@ -25,7 +25,6 @@ class UserCustomModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
     objects = UserCustomManager()
 
 
