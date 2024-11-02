@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'drf_yasg',
     # my apps
     'apps.users',
     'apps.car',
@@ -125,7 +126,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/drf-static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'storage')
 MEDIA_URL = '/media/'

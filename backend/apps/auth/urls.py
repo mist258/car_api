@@ -10,5 +10,4 @@ urlpatterns = [
     path('/activate/<str:token>', ActivationUserView.as_view(), name='activate'), # +
     path('/recovery_request', RecoveryPasswordRequestView.as_view(), name='recovery_request'), # +
     path('/recovery_password/<str:token>', RecoveryPasswordView.as_view(), name='recovery_password' ), # +
-    # path('/logout', LogoutView.as_view(), name='logout'),
 ]

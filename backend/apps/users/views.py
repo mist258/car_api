@@ -15,14 +15,23 @@ from .filters import UserFilter
 UserModel = get_user_model()
 
 
-class UserCreateView(CreateAPIView): # create new user
+class UserCreateView(CreateAPIView):
+    '''
+        users registration
+        (for everyone)
+    '''
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
 
 
-class UserBlockView(GenericAPIView): # block user
+class UserBlockView(GenericAPIView):
+    '''
+        block user (
+        for manager or superuser)
+    '''
     permission_classes = (IsSuperUserOrIsStaff,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
@@ -39,8 +48,13 @@ class UserBlockView(GenericAPIView): # block user
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class UserUnblockView(GenericAPIView): # unblock user
+class UserUnblockView(GenericAPIView):
+    '''
+        unblock user
+        (for manager or superuser)
+    '''
     permission_classes = (IsSuperUserOrIsStaff,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
@@ -57,8 +71,13 @@ class UserUnblockView(GenericAPIView): # unblock user
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class UserToManagerView(GenericAPIView): # make user manager
+class UserToManagerView(GenericAPIView):
+    '''
+        make user a manager
+        (for superuser)
+    '''
     permission_classes = (IsSuperUser,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
@@ -90,7 +109,11 @@ class UserToManagerView(GenericAPIView): # make user manager
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-class GetMeView(GenericAPIView): # get my info
+class GetMeView(GenericAPIView):
+    '''
+        user can see own info
+        (for authenticated users)
+    '''
     serializer_class = UserSerializer
     queryset = UserModel.objects.all()
     permission_classes = (IsAuthenticated,)
@@ -101,7 +124,11 @@ class GetMeView(GenericAPIView): # get my info
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class ShowAllUsersView(ListAPIView): # admin can get and filter users
+class ShowAllUsersView(ListAPIView):
+    '''
+        show all users
+        (for manager or superuser)
+    '''
     serializer_class = UserSerializer
     filterset_class = UserFilter
     permission_classes = (IsSuperUserOrIsStaff,)

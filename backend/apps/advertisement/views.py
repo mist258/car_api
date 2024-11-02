@@ -28,7 +28,11 @@ from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 from core.services.currency_service import CurrencyService
 
 
-class AdvertisementCreateView(CreateAPIView): # create advertisement for auth user
+class AdvertisementCreateView(CreateAPIView):
+    '''
+        create advertisement
+        (for seller)
+    '''
 
     serializer_class = AdvertisementSerializer
     permission_classes = (IsUserSeller, )
@@ -42,7 +46,11 @@ class AdvertisementCreateView(CreateAPIView): # create advertisement for auth us
         return Response(res_data, status.HTTP_201_CREATED)
 
 
-class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advertisements
+class ShowAllUsersAdvView(ListAPIView):
+    '''
+        user can see their own advertisements
+        (for seller)
+    '''
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsUserSeller,)
 
@@ -59,8 +67,11 @@ class ShowAllUsersAdvView(ListAPIView): # authenticated user can list own advert
         return queryset
 
 
-class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own advertisement by id
-
+class UpdateUserAdvView(UpdateAPIView):
+    '''
+        user can update own advertisement by id
+        (for seller)
+    '''
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsUserSeller,)
@@ -82,7 +93,11 @@ class UpdateUserAdvView(UpdateAPIView): # authenticated user can update own adve
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
+class ShowUserAdvByIdView(RetrieveAPIView):
+    '''
+        users can show advertisement by id
+        (for everyone)
+    '''
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.select_related('car', 'seller',).all()
     filterset_class = AdvertisementFilter
@@ -97,7 +112,11 @@ class ShowUserAdvByIdView(RetrieveAPIView): # show advert by id
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
+class DestroyUserAdvView(DestroyAPIView):
+    '''
+        seller can destroy own advertisement by id
+        (for manager or superuser or seller)
+    '''
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsUserSeller,
@@ -111,14 +130,22 @@ class DestroyUserAdvView(DestroyAPIView): # delete adv for seller
         return Response(status.HTTP_204_NO_CONTENT)
 
 
-class ShowAdvertisementListView(ListAPIView):  # show all advertisements
+class ShowAdvertisementListView(ListAPIView):
+    '''
+        show the entire list of ads
+        (for everyone)
+    '''
     queryset = AdvertisementModel.objects.select_related('car', 'seller').filter(is_active=True)
     serializer_class = AdvertisementSerializer
     filterset_class = AdvertisementFilter
     permission_classes = (AllowAny,)
 
 
-class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
+class AdvCarAddPhotoView(GenericAPIView):
+    '''
+        user can add advertisement photos
+        (for seller)
+    '''
     serializer_class = AdvAddCarPhotoSerializer
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsUserSeller,)
@@ -139,7 +166,11 @@ class AdvCarAddPhotoView(GenericAPIView): # seller can add photo
         return Response(adv_serializer.data, status.HTTP_200_OK)
 
 
-class AdvCarRemovePhotoView(DestroyAPIView): # seller can delete photo
+class AdvCarRemovePhotoView(DestroyAPIView):
+    '''
+        user can remove advertisement photos
+        (for seller)
+    '''
     queryset = CarPhotoModel.objects.all()
     permission_classes = (IsUserSeller,)
 
@@ -154,7 +185,11 @@ class AdvCarRemovePhotoView(DestroyAPIView): # seller can delete photo
         return Response(_('Photo not found'),status.HTTP_404_NOT_FOUND)
 
 
-class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
+class CurrencyConverterView(CurrencyService, GenericAPIView):
+    '''
+        convert current currency to another currency
+        (for everyone)
+    '''
     queryset = AdvertisementModel.objects.filter(is_active=True)
     serializer_class = AdvertisementSerializer
     permission_classes = (AllowAny,)
@@ -204,14 +239,22 @@ class CurrencyConverterView(CurrencyService, GenericAPIView): # convert price
         return Response(res)
 
 
-class ShowNonActivateAdvertisementView(ListAPIView): # show nonactive advert for admin
+class ShowNonActivateAdvertisementView(ListAPIView):
+    '''
+        show nonactive advert
+        (for manager or superuser)
+    '''
     queryset = AdvertisementModel.objects.select_related('car', 'seller').filter(is_active=False)
     serializer_class = AdvertisementSerializer
     filterset_class = AdvertisementFilter
     permission_classes = (IsSuperUserOrIsStaff,)
 
 
-class DeactivateAdvertisementView(UpdateAPIView): # deactivation advert
+class DeactivateAdvertisementView(UpdateAPIView):
+    '''
+        deactivation advert
+        (for manager)
+    '''
     queryset = AdvertisementModel.objects.all()
     serializer_class = AdvertisementSerializer
     permission_classes = (IsAdminUser,)
@@ -225,7 +268,11 @@ class DeactivateAdvertisementView(UpdateAPIView): # deactivation advert
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class ActivateAdvertisementView(UpdateAPIView): # activate nonactive adv
+class ActivateAdvertisementView(UpdateAPIView):
+    '''
+        activate nonactive advert
+        (for manager)
+    '''
     queryset = AdvertisementModel.objects.all()
     serializer_class = AdvertisementSerializer
     permission_classes = (IsAdminUser,)

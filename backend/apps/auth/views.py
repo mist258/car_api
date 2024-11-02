@@ -13,8 +13,13 @@ from .serializers import EmailSerializer, PasswordSerializer
 
 User = get_user_model()
 
-class ActivationUserView(GenericAPIView): # users activation
+class ActivationUserView(GenericAPIView):
+    '''
+        activate user account
+        (for everyone)
+    '''
     permission_classes = (AllowAny,)
+    serializer_class = UserSerializer
 
     def patch(self, *args, **kwargs):
         token = kwargs['token']
@@ -25,7 +30,11 @@ class ActivationUserView(GenericAPIView): # users activation
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class RecoveryPasswordRequestView(GenericAPIView): # request for recovery password
+class RecoveryPasswordRequestView(GenericAPIView):
+    '''
+        a password reset request
+        (for everyone)
+    '''
     permission_classes = (AllowAny,)
     serializer_class = EmailSerializer
 
@@ -38,7 +47,11 @@ class RecoveryPasswordRequestView(GenericAPIView): # request for recovery passwo
         return Response({'detail': 'check your email'}, status.HTTP_200_OK)
 
 
-class RecoveryPasswordView(GenericAPIView): #  recovery password
+class RecoveryPasswordView(GenericAPIView):
+    '''
+        recovery password
+        (for everyone)
+    '''
     permission_classes = (AllowAny,)
     serializer_class = PasswordSerializer
 
@@ -51,14 +64,4 @@ class RecoveryPasswordView(GenericAPIView): #  recovery password
         user.set_password(serializer.data['password'])
         user.save()
         return Response({'detail':' your password has been changed'}, status.HTTP_200_OK)
-
-
-# class LogoutView(GenericAPIView):
-#     permission_classes = (IsAuthenticated,)
-#
-#     def post(self, *args, **kwargs):
-#         refresh_token = self.request.data["refresh_token"]
-#         token = RefreshToken(refresh_token)
-#         token.blacklist()
-#         return Response({'detail': 'logged out'}, status.HTTP_200_OK)
 
