@@ -17,7 +17,7 @@ from .filters import UserFilter
 
 UserModel = get_user_model()
 
-@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_summary='registration new user', operation_id='create user'))
+@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_id='create user'))
 class UserCreateView(CreateAPIView):
     '''
         users registration
@@ -28,7 +28,7 @@ class UserCreateView(CreateAPIView):
     permission_classes = (AllowAny,)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_summary='block user by id', operation_id='block user'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='block user'))
 class UserBlockView(GenericAPIView):
     '''
         block user (
@@ -40,6 +40,7 @@ class UserBlockView(GenericAPIView):
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
 
+    @swagger_auto_schema(request_body=Serializer)
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
 
@@ -52,7 +53,7 @@ class UserBlockView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_summary='unblock blocked user by id ', operation_id='unblock user'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='unblock user'))
 class UserUnblockView(GenericAPIView):
     '''
         unblock user
@@ -77,7 +78,7 @@ class UserUnblockView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_summary='make the user a manager', operation_id='create manager'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='create manager'))
 class UserToManagerView(GenericAPIView):
     '''
         make user a manager
@@ -89,6 +90,7 @@ class UserToManagerView(GenericAPIView):
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
 
+    @swagger_auto_schema(request_body=Serializer)
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
 
@@ -116,7 +118,7 @@ class UserToManagerView(GenericAPIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(operation_summary='get info about me', operation_id='about me'))
+@method_decorator(name='get', decorator=swagger_auto_schema(operation_id='about me'))
 class GetMeView(GenericAPIView):
     '''
         user can see own info
@@ -132,7 +134,7 @@ class GetMeView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(operation_summary='show all users', operation_id='show all users'))
+@method_decorator(name='get', decorator=swagger_auto_schema(operation_id='show all users'))
 class ShowAllUsersView(ListAPIView):
     '''
         show all users

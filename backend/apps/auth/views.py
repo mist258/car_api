@@ -15,7 +15,7 @@ from .serializers import EmailSerializer, PasswordSerializer
 
 User = get_user_model()
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(security=[], operation_summary='activate nonactive user by id ', operation_id='activate user'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(security=[], operation_id='activate user'))
 class ActivationUserView(GenericAPIView):
     '''
         activate user account
@@ -33,7 +33,7 @@ class ActivationUserView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_summary='get recovery password request from user ', operation_id='recovery password request'))
+@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_id='recovery password request'))
 class RecoveryPasswordRequestView(GenericAPIView):
     '''
         a password reset request
@@ -51,7 +51,7 @@ class RecoveryPasswordRequestView(GenericAPIView):
         return Response({'detail': 'check your email'}, status.HTTP_200_OK)
 
 
-@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_summary='make recovery password from user ', operation_id='recovery password'))
+@method_decorator(name='post', decorator=swagger_auto_schema(security=[], operation_id='recovery password'))
 class RecoveryPasswordView(GenericAPIView):
     '''
         recovery password

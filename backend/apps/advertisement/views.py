@@ -15,6 +15,7 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
 from apps.advertisement.filters import AdvertisementFilter
 from apps.advertisement.models import AdvertisementModel, CarPhotoModel
@@ -30,7 +31,7 @@ from core.services.currency_service import CurrencyService
 from drf_yasg.utils import swagger_auto_schema
 
 
-@method_decorator(name='post', decorator=swagger_auto_schema(operation_summary='create new ads by user ', operation_id='create ads'))
+@method_decorator(name='post', decorator=swagger_auto_schema(operation_id='create ads'))
 class AdvertisementCreateView(CreateAPIView):
     '''
         create advertisement
@@ -49,7 +50,7 @@ class AdvertisementCreateView(CreateAPIView):
         return Response(res_data, status.HTTP_201_CREATED)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(operation_summary='show all ads with ability to filter  ', operation_id='all ads with filtering '))
+@method_decorator(name='get', decorator=swagger_auto_schema(operation_id='all ads with filtering '))
 class ShowAllUsersAdvView(ListAPIView):
     '''
         user can see their own advertisements
@@ -71,12 +72,17 @@ class ShowAllUsersAdvView(ListAPIView):
         return queryset
 
 
-@method_decorator(name='put', decorator=swagger_auto_schema(operation_summary='full update ads by user', operation_id='full update'))
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_summary='partial update ads by user', operation_id='partial update'))
+@method_decorator(name='put', decorator=swagger_auto_schema(operation_id='full update'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='partial update'))
 class UpdateUserAdvView(UpdateAPIView):
     '''
-        user can update own advertisement by id
+    put:
+        user can make full update own advertisement by id
         (for seller)
+    patch:
+         user can make partial update own advertisement by id
+        (for seller)
+
     '''
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
@@ -99,7 +105,7 @@ class UpdateUserAdvView(UpdateAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(security=[],operation_summary='ability to show user\'s advert by id', operation_id='show user\'s advert by id'))
+@method_decorator(name='get', decorator=swagger_auto_schema(security=[], operation_id='show user\'s advert by id'))
 class ShowUserAdvByIdView(RetrieveAPIView):
     '''
         users can show advertisement by id
@@ -119,7 +125,7 @@ class ShowUserAdvByIdView(RetrieveAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='delete', decorator=swagger_auto_schema(operation_summary='ability to delete advert by user', operation_id='delete advert'))
+@method_decorator(name='delete', decorator=swagger_auto_schema(operation_id='delete advert'))
 class DestroyUserAdvView(DestroyAPIView):
     '''
         seller can destroy own advertisement by id
@@ -138,7 +144,7 @@ class DestroyUserAdvView(DestroyAPIView):
         return Response(status.HTTP_204_NO_CONTENT)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(security=[],operation_summary='ability to show all active advert', operation_id='show active advert'))
+@method_decorator(name='get', decorator=swagger_auto_schema(security=[], operation_id='show active advert'))
 class ShowAdvertisementListView(ListAPIView):
     '''
         show the entire list of ads
@@ -149,7 +155,8 @@ class ShowAdvertisementListView(ListAPIView):
     filterset_class = AdvertisementFilter
     permission_classes = (AllowAny,)
 
-@method_decorator(name='put', decorator=swagger_auto_schema(operation_summary='seller can add photos to advert', operation_id='add photos to advert'))
+
+@method_decorator(name='put', decorator=swagger_auto_schema(operation_id='add photos to advert'))
 class AdvCarAddPhotoView(GenericAPIView):
     '''
         user can add advertisement photos
@@ -175,7 +182,7 @@ class AdvCarAddPhotoView(GenericAPIView):
         return Response(adv_serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='delete', decorator=swagger_auto_schema(operation_summary='seller can delete photos in advert', operation_id='delete photos in advert'))
+@method_decorator(name='delete', decorator=swagger_auto_schema(operation_id='delete photos in advert'))
 class AdvCarRemovePhotoView(DestroyAPIView):
     '''
         user can remove advertisement photos
@@ -195,7 +202,7 @@ class AdvCarRemovePhotoView(DestroyAPIView):
         return Response(_('Photo not found'),status.HTTP_404_NOT_FOUND)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(security=[], operation_summary='user can convert current currency', operation_id='convert currency'))
+@method_decorator(name='get', decorator=swagger_auto_schema(security=[], operation_id='convert currency'))
 class CurrencyConverterView(CurrencyService, GenericAPIView):
     '''
         convert current currency to another currency
@@ -250,7 +257,7 @@ class CurrencyConverterView(CurrencyService, GenericAPIView):
         return Response(res)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(operation_summary='show all nonactive advert', operation_id='nonactive adverts'))
+@method_decorator(name='get', decorator=swagger_auto_schema(operation_id='nonactive adverts'))
 class ShowNonActivateAdvertisementView(ListAPIView):
     '''
         show nonactive advert
@@ -262,8 +269,7 @@ class ShowNonActivateAdvertisementView(ListAPIView):
     permission_classes = (IsSuperUserOrIsStaff,)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_summary='ability to deactivate advert', operation_id='advert deactivation'))
-@method_decorator(name='put', decorator=swagger_auto_schema(operation_summary='ability to deactivate advert', operation_id='advert deactivation'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='advert deactivation'))
 class DeactivateAdvertisementView(UpdateAPIView):
     '''
         deactivation advert
@@ -273,6 +279,7 @@ class DeactivateAdvertisementView(UpdateAPIView):
     serializer_class = AdvertisementSerializer
     permission_classes = (IsAdminUser,)
 
+    @swagger_auto_schema(request_body=Serializer)
     def patch(self, *args, **kwargs):
         adv = self.get_object()
         if adv.is_active:
@@ -282,8 +289,7 @@ class DeactivateAdvertisementView(UpdateAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_summary='ability to activate advert', operation_id='advert activation'))
-@method_decorator(name='put', decorator=swagger_auto_schema(operation_summary='ability to activate advert', operation_id='advert activation'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='advert activation'))
 class ActivateAdvertisementView(UpdateAPIView):
     '''
         activate nonactive advert
