@@ -42,4 +42,4 @@ class CarModel(BaseModel):
                                                validators.MaxValueValidator(datetime.now().year)],
                                    error_messages=_(f'Car\'s year cannot be less than 1950 and more than {datetime.now().year} ' ))
     car_country_origin = CountryField(blank_label=_('Choose country origin'), blank=False, null=False)
-    car_accident_history = models.TextField(blank=False, null=False)
+    car_accident_history = models.BooleanField(blank=False, null=False)

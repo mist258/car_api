@@ -7,9 +7,9 @@ from .models import CarModel
 
 def validate_vin_code(value):
     if len(value) > 17:
-        raise serializers.ValidationError(_('VIN code must be less than 17 digits'))
+        raise serializers.ValidationError(_('VIN code сan not be more than 17 characters'))
     if len(value) < 17:
-        raise serializers.ValidationError(_('VIN code must be greater than 17 digits'))
+        raise serializers.ValidationError(_('VIN code сan not be less than 17 characters'))
 
 
 class CarModelSerializer(serializers.ModelSerializer):

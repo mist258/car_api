@@ -39,6 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'is_superuser',
                   'is_seller',
                   'is_buyer',
+                  'is_premium',
                   'last_login',
                   'created_at',
                   'updated_at',
@@ -54,7 +55,8 @@ class UserSerializer(serializers.ModelSerializer):
                             'is_staff',
                             'is_seller',
                             'is_buyer',
-                            'is_superuser',)
+                            'is_superuser',
+                            'is_premium',)
 
         extra_kwargs = {
             'password': {
@@ -76,5 +78,3 @@ class UserSerializer(serializers.ModelSerializer):
         UserProfile.objects.create(user=user, **profile)
         EmailService.register(user)
         return user
-
-

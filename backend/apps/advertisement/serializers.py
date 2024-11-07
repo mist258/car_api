@@ -5,7 +5,6 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from apps.car.models import CarModel
-from apps.users.serializers import ProfileSerializer
 from better_profanity import profanity
 from core.services.email_service import EmailService
 from core.services.profanity_service import CheckProfanityService
@@ -31,11 +30,10 @@ class AdvAddCarPhotoSerializer(serializers.ModelSerializer):
 class AdvertisementSerializer(serializers.ModelSerializer):
     car_photo = AdvAddCarPhotoSerializer(many=True, read_only=True)
     car = CarModelSerializer()
-    seller = ProfileSerializer(read_only=True)
 
     class Meta:
         model = AdvertisementModel
-        fields = ('seller',
+        fields = (
                   'id',
                   'price',
                   'currency',
@@ -46,10 +44,10 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                   'edit_attempts',
                   'car',)
 
-        read_only_fields = ('seller',
+        read_only_fields = (
                             'id',
-                            'is_active',
-                            'edit_attempts')
+                            'edit_attempts',
+                            'is_active')
 
     @atomic
     def create(self, validated_data: dict):
@@ -94,6 +92,45 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                                                    statistic=statistic,
                                                    **validated_data)
         return advert
+    @atomic
+    def create(self, validated_data: dict):
+        request = self.context['request']
+        seller = request.user.profile
+
+        if seller.account_type == 'basic':
+            advertisement = AdvertisementModel.objects.filter(seller=seller).count()
+            if advertisement >= 1:
+                raise ValidationError(_('You should have premium subscription to publish more, '
+                                        'then 1 advertisement'))
+
+        car_data = validated_data.pop('car', {})
+        description = validated_data.get('car_additional_description', '')
+        car, created = CarModel.objects.get_or_create(**car_data)
+
+        if profanity.contains_profanity(description):
+            remaining = 2 - validated_data.get('edit_attempts', 0)
+
+            if remaining <= 0:
+                raise ValidationError(_('Maximum edit attempts reached. '
+                                        'Advertisement sent for review.'))
+            validated_data['edit_attempts'] = validated_data.get('edit_attempts', 0) + 1
+            advert = AdvertisementModel.objects.create(seller=seller,
+                                                       car=car,
+                                                       is_active=False,
+                                                       **validated_data)
+
+            EmailService.notify_admin(advert, description)
+
+            raise ValidationError(_(f'Inappropriate content detected. {remaining} attempts remaining.'))
+
+        statistic = StatisticAdvertisementModel.objects.create()
+        advert = AdvertisementModel.objects.create(seller=seller,
+                                                   car=car,
+                                                   is_active=True,
+                                                   statistic=statistic,
+                                                   **validated_data)
+        return advert
+
 
     @atomic
     def update(self, instance, validated_data: dict):

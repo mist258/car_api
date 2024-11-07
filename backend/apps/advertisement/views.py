@@ -13,7 +13,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     UpdateAPIView,
 )
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 
@@ -25,6 +25,7 @@ from apps.advertisement.serializers import (
     PremiumAdvertisementSerializer,
 )
 from apps.users.models import UserProfile
+from core.permissions.is_premium import IsSellerPremium
 from core.permissions.is_seller import IsUserSeller
 from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 from core.services.currency_service import CurrencyService
@@ -39,7 +40,7 @@ class AdvertisementCreateView(CreateAPIView):
     '''
 
     serializer_class = AdvertisementSerializer
-    permission_classes = (IsUserSeller, )
+    permission_classes = (IsAuthenticated, IsUserSeller)
 
     def post(self, *args, **kwargs):
         data = self.request.data
@@ -57,7 +58,7 @@ class ShowAllUsersAdvView(ListAPIView):
         (for seller)
     '''
     queryset = AdvertisementModel.objects.all()
-    permission_classes = (IsUserSeller,)
+    permission_classes = (IsAuthenticated, IsUserSeller,)
 
     def get_serializer_class(self):
         if self.request.user.is_premium:

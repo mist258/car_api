@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 
 from apps.users.models import UserProfile
 from apps.users.serializers import ProfileSerializer, UserSerializer
@@ -35,12 +34,11 @@ class UserBlockView(GenericAPIView):
         for manager or superuser)
     '''
     permission_classes = (IsSuperUserOrIsStaff,)
-    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
 
-    @swagger_auto_schema(request_body=Serializer)
+    @swagger_auto_schema(responses={status.HTTP_200_OK : UserSerializer()})
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
 
@@ -60,12 +58,11 @@ class UserUnblockView(GenericAPIView):
         (for manager or superuser)
     '''
     permission_classes = (IsSuperUserOrIsStaff,)
-    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
 
-    @swagger_auto_schema(request_body=Serializer)
+    @swagger_auto_schema(responses={status.HTTP_200_OK : UserSerializer()})
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
 
@@ -85,12 +82,11 @@ class UserToManagerView(GenericAPIView):
         (for superuser)
     '''
     permission_classes = (IsSuperUser,)
-    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
 
-    @swagger_auto_schema(request_body=Serializer)
+    @swagger_auto_schema(responses={status.HTTP_200_OK : UserSerializer()})
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
 
