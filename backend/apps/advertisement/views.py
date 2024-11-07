@@ -15,7 +15,6 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 
 from apps.advertisement.filters import AdvertisementFilter
 from apps.advertisement.models import AdvertisementModel, CarPhotoModel
@@ -25,7 +24,6 @@ from apps.advertisement.serializers import (
     PremiumAdvertisementSerializer,
 )
 from apps.users.models import UserProfile
-from core.permissions.is_premium import IsSellerPremium
 from core.permissions.is_seller import IsUserSeller
 from core.permissions.is_superuser_or_is_staff import IsSuperUserOrIsStaff
 from core.services.currency_service import CurrencyService
@@ -117,6 +115,7 @@ class ShowUserAdvByIdView(RetrieveAPIView):
     filterset_class = AdvertisementFilter
     permission_classes = (AllowAny,)
 
+    @swagger_auto_schema(responses={status.HTTP_200_OK : AdvertisementSerializer()})
     def retrieve(self, *args, **kwargs):
         adv = self.get_object()
         if adv.statistic:
@@ -277,10 +276,9 @@ class DeactivateAdvertisementView(UpdateAPIView):
         (for manager)
     '''
     queryset = AdvertisementModel.objects.all()
-    serializer_class = AdvertisementSerializer
     permission_classes = (IsAdminUser,)
 
-    @swagger_auto_schema(request_body=Serializer)
+    @swagger_auto_schema(responses={status.HTTP_200_OK : AdvertisementSerializer()})
     def patch(self, *args, **kwargs):
         adv = self.get_object()
         if adv.is_active:
@@ -297,9 +295,9 @@ class ActivateAdvertisementView(UpdateAPIView):
         (for manager)
     '''
     queryset = AdvertisementModel.objects.all()
-    serializer_class = AdvertisementSerializer
     permission_classes = (IsAdminUser,)
 
+    @swagger_auto_schema(responses={status.HTTP_200_OK : AdvertisementSerializer()})
     def patch(self, *args, **kwargs):
         adv = self.get_object()
 
