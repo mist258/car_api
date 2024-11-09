@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
+from configs.celery import app
 from core.services.jwt_service import ActivateToken, JWTService, RecoveryToken
 
 UserModel = get_user_model()
@@ -12,6 +13,7 @@ UserModel = get_user_model()
 class EmailService:
 
     @staticmethod
+    @app.task
     def __send_email(to:str, template_name:str, context:dict, subject='') -> None:
         template = get_template(template_name)
         html_content = template.render(context)
@@ -23,7 +25,7 @@ class EmailService:
     def register(cls, user):
         token = JWTService.create_token(user, ActivateToken)
         url = f'http://localhost:3000/register/{token}'
-        cls.__send_email(user.email,
+        cls.__send_email.delay(user.email,
                          'register.html',
                          {
                              'first_name':user.profile.first_name,
@@ -35,7 +37,7 @@ class EmailService:
     def recovery(cls, user):
         token = JWTService.create_token(user, RecoveryToken)
         url = f'http://localhost:3000/recovery/{token}'
-        cls.__send_email(user.email,
+        cls.__send_email.delay(user.email,
                          'recovery.html',
                          {
                              'first_name': user.profile.first_name,
@@ -51,7 +53,7 @@ class EmailService:
         if not admin_email:
             return
 
-        cls.__send_email(admin_email,
+        cls.__send_email.delay(admin_email,
                          'additional_email_check.html',
                          {
                              'advertisement_id': instance.id,
