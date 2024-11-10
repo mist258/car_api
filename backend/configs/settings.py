@@ -35,6 +35,7 @@ AUTH_USER_MODEL = 'users.UserCustomModel'
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
@@ -75,6 +76,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "configs.wsgi.application"
+ASGI_APPLICATION = "configs.asgi.application"
 
 
 # Database
