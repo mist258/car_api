@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.car',
     'apps.advertisement',
     'apps.auth',
+    'apps.chat',
     'core',
 ]
 
