@@ -58,6 +58,7 @@ class UserUnblockView(GenericAPIView):
         (for manager or superuser)
     '''
     permission_classes = (IsSuperUserOrIsStaff,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
