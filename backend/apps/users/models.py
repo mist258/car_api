@@ -39,8 +39,7 @@ class UserProfile(BaseModel):
     last_name = models.CharField(max_length=50, validators=[RegexValidator(regex=r'^[A-Za-z]*$')],
                                                                 error_messages=_('Last name is invalid'))
     phone_number = models.CharField(max_length=20, validators=[RegexValidator
-                                                               (regex=r'^\+?3?8?(0[\s\.-]\d{2}[\s\.-]\d{3}[\s\.-]'
-                                                                      r'\d{2}[\s\.-]\d{2})$')],
+                                                               (regex=r'^\+380\d{9}$')],
                                     error_messages=_('Phone number is invalid'))
     age = models.IntegerField(validators=[validators.MinValueValidator(18), validators.MaxValueValidator(90)],
                               error_messages=_('Age must be between 18 and 90'))

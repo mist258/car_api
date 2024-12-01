@@ -56,7 +56,8 @@ class UserSerializer(serializers.ModelSerializer):
                             'is_seller',
                             'is_buyer',
                             'is_superuser',
-                            'is_premium',)
+                            'is_premium',
+                            )
 
         extra_kwargs = {
             'password': {

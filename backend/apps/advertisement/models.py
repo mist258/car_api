@@ -12,7 +12,6 @@ from core.services.file_service import FileService
 
 from .choices_adv.adv_choices import AdvCurrencyChoices, AdvRegionChoices
 
-
 class StatisticAdvertisementModel(BaseModel):
     class Meta:
         db_table = "statistic_adv"

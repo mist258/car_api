@@ -41,57 +41,12 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                   'is_active',
                   'car_photo',
                   'car_additional_description',
-                  'edit_attempts',
                   'car',)
 
         read_only_fields = (
                             'id',
-                            'edit_attempts',
                             'is_active')
 
-    @atomic
-    def create(self, validated_data: dict):
-        request = self.context.get('request')
-        seller = request.user.profile
-
-        if seller.role_type == 'seller':
-
-            if seller.account_type == 'basic':
-                advertisement = AdvertisementModel.objects.filter(seller=seller).count()
-
-                if advertisement >= 1:
-                    raise ValidationError(_('You should have premium subscription to publish more, '
-                                            'then 1 advertisement'))
-        else:
-            raise ValidationError(_('Only authenticated seller can create advertisement'))
-
-        car_data = validated_data.pop('car', {})
-        description = validated_data.get('car_additional_description', '')
-        car, created = CarModel.objects.get_or_create(**car_data)
-
-        if profanity.contains_profanity(description):
-            remaining = 2 - validated_data.get('edit_attempts', 0)
-
-            if remaining <= 0:
-                raise ValidationError(_('Maximum edit attempts reached. '
-                                        'Advertisement sent for review.'))
-            validated_data['edit_attempts'] = validated_data.get('edit_attempts', 0) + 1
-            advert = AdvertisementModel.objects.create(seller=seller,
-                                                       car=car,
-                                                       is_active=False,
-                                                       **validated_data)
-
-            EmailService.notify_admin(advert, description)
-
-            raise ValidationError(_(f'Inappropriate content detected. {remaining} attempts remaining.'))
-
-        statistic = StatisticAdvertisementModel.objects.create()
-        advert = AdvertisementModel.objects.create(seller=seller,
-                                                   car=car,
-                                                   is_active=True,
-                                                   statistic=statistic,
-                                                   **validated_data)
-        return advert
     @atomic
     def create(self, validated_data: dict):
         request = self.context['request']
@@ -135,7 +90,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     @atomic
     def update(self, instance, validated_data: dict):
         data = validated_data.pop('car')
-        description = validated_data.get('car_additional_description', '')
+        description = validated_data.get('car_additional_description',)
 
         CheckProfanityService.check_profanity(instance, description)
 
@@ -162,7 +117,7 @@ class StatisticAdvertisementModelSerializer(serializers.ModelSerializer):
                   'month_views',
                   'last_view_date',)
 
-
+# serializer for premium account
 class PremiumAdvertisementSerializer(AdvertisementSerializer):
     statistic = StatisticAdvertisementModelSerializer(read_only=True)
     avg_price_in_region = serializers.SerializerMethodField(read_only=True)

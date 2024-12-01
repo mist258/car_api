@@ -43,4 +43,3 @@ class AdvertisementFilter(filters.FilterSet):
             'car_engine_displacement',
         )
     )
-

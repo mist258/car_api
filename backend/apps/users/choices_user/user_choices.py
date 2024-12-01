@@ -2,8 +2,8 @@ from django.db import models
 
 
 class AccountType(models.TextChoices):
-    PREMIUM = 'premium', 'premium'
     BASIC = 'basic', 'basic'
+    PREMIUM = 'premium', 'premium'
 
 class UserRoleType(models.TextChoices):
     SELLER = 'seller', 'seller'

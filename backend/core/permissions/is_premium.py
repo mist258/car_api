@@ -4,7 +4,9 @@ from .is_seller import IsUserSeller
 
 
 class IsSellerPremium(BasePermission):
+
     def has_permission(self, request, view):
+
         if not request.user:
             return False
 

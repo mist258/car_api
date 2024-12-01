@@ -17,4 +17,4 @@ def error_handler(exc: Exception, context: dict) -> Response:
     return response
 
 def _jwt_validation_error_handler(exc: Exception, context:dict) -> Response:
-    return Response({'detail' : 'Tolen is invalid or expired'}, status.HTTP_400_BAD_REQUEST)
+    return Response({'detail' : 'Token is invalid or expired'}, status.HTTP_400_BAD_REQUEST)

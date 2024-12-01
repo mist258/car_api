@@ -27,19 +27,21 @@ class UserCreateView(CreateAPIView):
     permission_classes = (AllowAny,)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='block user'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='block user',
+                                                              responses={status.HTTP_200_OK : UserSerializer()}))
 class UserBlockView(GenericAPIView):
     '''
         block user (
         for manager or superuser)
     '''
     permission_classes = (IsSuperUserOrIsStaff,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
 
-    @swagger_auto_schema(responses={status.HTTP_200_OK : UserSerializer()})
-    def patch(self, request, *args, **kwargs):
+
+    def patch(self, *args, **kwargs):
         user = self.get_object()
 
         if user.is_active and not user.is_blocked:
@@ -51,7 +53,8 @@ class UserBlockView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='unblock user'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='unblock user',
+                                                              responses={status.HTTP_200_OK : UserSerializer()}))
 class UserUnblockView(GenericAPIView):
     '''
         unblock user
@@ -63,8 +66,7 @@ class UserUnblockView(GenericAPIView):
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id)
 
-    @swagger_auto_schema(responses={status.HTTP_200_OK : UserSerializer()})
-    def patch(self, request, *args, **kwargs):
+    def patch(self, *args, **kwargs):
         user = self.get_object()
 
         if user.is_blocked and not user.is_active:
@@ -76,19 +78,20 @@ class UserUnblockView(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='create manager'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='create manager',
+                                                              responses={status.HTTP_200_OK : UserSerializer()}))
 class UserToManagerView(GenericAPIView):
     '''
         make user a manager
         (for superuser)
     '''
     permission_classes = (IsSuperUser,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
-        return UserModel.objects.exclude(pk=self.request.user.id)
+        return UserModel.objects.exclude(pk=self.request.user.id).select_related('profile')
 
-    @swagger_auto_schema(responses={status.HTTP_200_OK : UserSerializer()})
-    def patch(self, request, *args, **kwargs):
+    def patch(self, *args, **kwargs):
         user = self.get_object()
 
         if user.is_active and not user.is_staff and not user.is_blocked:
@@ -143,3 +146,35 @@ class ShowAllUsersView(ListAPIView):
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.id).select_related('profile')
+
+
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='make premium acc'))
+class MakePremiumAccountView(GenericAPIView):
+    '''
+        from basic to premium account
+        (for manager or superuser)
+    '''
+
+    serializer_class = UserSerializer
+    permission_classes = (IsSuperUserOrIsStaff,)
+
+    def get_queryset(self):
+        return UserModel.objects.exclude(pk=self.request.user.id).select_related('profile')
+
+    def patch(self, *args, **kwargs):
+        user = self.get_object()
+
+        if user.is_seller and not user.is_premium and not user.is_blocked and not user.is_staff:
+            user.is_premium = True
+            user.save()
+        serializer_user = UserSerializer(user)
+
+        profile = UserProfile.objects.get(user=user)
+
+        if profile.role_type == 'seller' and profile.account_type == 'basic':
+            profile.account_type = 'premium'
+            profile.save()
+
+        return Response(serializer_user.data, status.HTTP_200_OK)
+
+

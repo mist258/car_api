@@ -38,7 +38,7 @@ class AdvertisementCreateView(CreateAPIView):
     '''
 
     serializer_class = AdvertisementSerializer
-    permission_classes = (IsAuthenticated, IsUserSeller)
+    permission_classes = (IsUserSeller,)
 
     def post(self, *args, **kwargs):
         data = self.request.data
@@ -107,7 +107,7 @@ class UpdateUserAdvView(UpdateAPIView):
 @method_decorator(name='get', decorator=swagger_auto_schema(security=[], operation_id='show user\'s advert by id'))
 class ShowUserAdvByIdView(RetrieveAPIView):
     '''
-        users can show advertisement by id
+        users can show advertisement by id (advert's id)
         (for everyone)
     '''
     serializer_class = AdvertisementSerializer
@@ -115,7 +115,6 @@ class ShowUserAdvByIdView(RetrieveAPIView):
     filterset_class = AdvertisementFilter
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(responses={status.HTTP_200_OK : AdvertisementSerializer()})
     def retrieve(self, *args, **kwargs):
         adv = self.get_object()
         if adv.statistic:
@@ -128,13 +127,12 @@ class ShowUserAdvByIdView(RetrieveAPIView):
 @method_decorator(name='delete', decorator=swagger_auto_schema(operation_id='delete advert'))
 class DestroyUserAdvView(DestroyAPIView):
     '''
-        seller can destroy own advertisement by id
-        (for manager or superuser or seller)
+        seller can destroy own advertisement by id (advert's id)
+        (for manager or superuser)
     '''
     serializer_class = AdvertisementSerializer
     queryset = AdvertisementModel.objects.all()
-    permission_classes = (IsUserSeller,
-                         IsSuperUserOrIsStaff,)
+    permission_classes = (IsSuperUserOrIsStaff,)
 
     def delete(self, *args, **kwargs):
         adv = self.get_object()
@@ -159,7 +157,7 @@ class ShowAdvertisementListView(ListAPIView):
 @method_decorator(name='put', decorator=swagger_auto_schema(operation_id='add photos to advert'))
 class AdvCarAddPhotoView(GenericAPIView):
     '''
-        user can add advertisement photos
+        user can add advertisement photos (advert's id)
         (for seller)
     '''
     serializer_class = AdvAddCarPhotoSerializer
@@ -173,7 +171,8 @@ class AdvCarAddPhotoView(GenericAPIView):
         exist_photos = adv.car_photo.count()
 
         if exist_photos + len(file_photo) > photo_amount:
-            raise ValidationError(_(f'You can not add more. Maximum photo is {photo_amount}. You already uploaded {exist_photos} photos'))
+            raise ValidationError(_(f'You can not add more. Maximum photo is {photo_amount}. '
+                                    f'You already uploaded {exist_photos} photos'))
         for index in file_photo:
             serializer = AdvAddCarPhotoSerializer(data={'car_photo': file_photo[index]})
             serializer.is_valid(raise_exception=True)
@@ -185,7 +184,7 @@ class AdvCarAddPhotoView(GenericAPIView):
 @method_decorator(name='delete', decorator=swagger_auto_schema(operation_id='delete photos in advert'))
 class AdvCarRemovePhotoView(DestroyAPIView):
     '''
-        user can remove advertisement photos
+        user can remove advertisement photos (photo's id)
         (for seller)
     '''
     queryset = CarPhotoModel.objects.all()
@@ -205,7 +204,7 @@ class AdvCarRemovePhotoView(DestroyAPIView):
 @method_decorator(name='get', decorator=swagger_auto_schema(security=[], operation_id='convert currency'))
 class CurrencyConverterView(CurrencyService, GenericAPIView):
     '''
-        convert current currency to another currency
+        convert current currency to another currency (advert's id)
         (for everyone)
     '''
     queryset = AdvertisementModel.objects.filter(is_active=True)
@@ -227,13 +226,13 @@ class CurrencyConverterView(CurrencyService, GenericAPIView):
 
         for curr, rate in rates.items():
             exchange_rates[curr] = {
-                "sale": float(rate["sale"]),
-                "purchase": float(rate["purchase"]),
+                "sale": round(float(rate["sale"]), 2),
+                "purchase": round(float(rate["purchase"]), 2),
             }
 
         res = {
             "original": {
-                "price": Decimal(price),
+                "price": round(Decimal(price), 2),
                 "currency": original_currency,
             },
             "converted": {},
@@ -241,18 +240,18 @@ class CurrencyConverterView(CurrencyService, GenericAPIView):
         }
 
         if original_currency == "UAN":
-            res["converted"]["USD"] = Decimal(price/rates["USD"]["sale"])
-            res["converted"]["EUR"] = Decimal(price/rates["EUR"]["sale"])
+            res["converted"]["USD"] = round(Decimal(price/rates["USD"]["sale"]), 2)
+            res["converted"]["EUR"] = round(Decimal(price/rates["EUR"]["sale"]), 2)
 
         if original_currency == "EUR":
             price_in_uah = price * rates["EUR"]["purchase"]
-            res["converted"]["UAH"] = Decimal(price_in_uah)
-            res["converted"]["USD"] = Decimal(price_in_uah/rates["USD"]["sale"])
+            res["converted"]["UAH"] = round(Decimal(price_in_uah),2)
+            res["converted"]["USD"] = round(Decimal(price_in_uah/rates["USD"]["sale"]), 2)
 
         if original_currency == "USD":
             price_in_uah = price * rates["USD"]["purchase"]
-            res["converted"]["UAH"] = Decimal(price_in_uah)
-            res["converted"]["EUR"] = Decimal(price_in_uah/rates["EUR"]["sale"])
+            res["converted"]["UAH"] = round(Decimal(price_in_uah),2)
+            res["converted"]["EUR"] = round(Decimal(price_in_uah/rates["EUR"]["sale"]), 2)
 
         return Response(res)
 
@@ -272,13 +271,13 @@ class ShowNonActivateAdvertisementView(ListAPIView):
 @method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='advert deactivation'))
 class DeactivateAdvertisementView(UpdateAPIView):
     '''
-        deactivation advert
+        deactivation advert (advert's id)
         (for manager)
     '''
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsAdminUser,)
+    serializer_class = AdvertisementSerializer
 
-    @swagger_auto_schema(responses={status.HTTP_200_OK : AdvertisementSerializer()})
     def patch(self, *args, **kwargs):
         adv = self.get_object()
         if adv.is_active:
@@ -291,13 +290,13 @@ class DeactivateAdvertisementView(UpdateAPIView):
 @method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='advert activation'))
 class ActivateAdvertisementView(UpdateAPIView):
     '''
-        activate nonactive advert
+        activate nonactive advert (advert's id)
         (for manager)
     '''
     queryset = AdvertisementModel.objects.all()
     permission_classes = (IsAdminUser,)
+    serializer_class = AdvertisementSerializer
 
-    @swagger_auto_schema(responses={status.HTTP_200_OK : AdvertisementSerializer()})
     def patch(self, *args, **kwargs):
         adv = self.get_object()
 

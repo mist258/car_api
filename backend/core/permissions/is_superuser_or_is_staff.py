@@ -4,7 +4,9 @@ from .is_superuser_permission import IsSuperUser
 
 
 class IsSuperUserOrIsStaff(BasePermission):
+
     def has_permission(self, request, view):
+
         if not request.user:
             return False
 

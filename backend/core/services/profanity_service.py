@@ -15,6 +15,7 @@ class CheckProfanityService:
             instance.edit_attempts = current_attempts + 1
             instance.is_active = False
 
+
             if current_attempts == 2:
                 instance.save()
                 EmailService.notify_admin(instance, description)
