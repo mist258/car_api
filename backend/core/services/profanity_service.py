@@ -1,7 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework.exceptions import ValidationError
-
 from better_profanity import profanity
 from core.services.email_service import EmailService
 

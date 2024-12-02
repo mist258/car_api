@@ -11,7 +11,6 @@ def validate_vin_code(value):
     if len(value) < 17:
         raise serializers.ValidationError(_('VIN code сan not be less than 17 characters'))
 
-
 class CarModelSerializer(serializers.ModelSerializer):
     vin_code = serializers.CharField(validators=[validate_vin_code])
 

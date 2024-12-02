@@ -1,6 +1,6 @@
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
-
+from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -58,12 +58,15 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                 raise ValidationError(_('You should have premium subscription to publish more, '
                                         'then 1 advertisement'))
 
-        car_data = validated_data.pop('car',)
-        car, created = CarModel.objects.get_or_create(**car_data)
-        description = validated_data.get('car_additional_description',)
+        car_data = validated_data.pop('car', )
+        try:
+            car, created = CarModel.objects.get_or_create(**car_data)
+        except IntegrityError as e:
+            raise ValidationError(_('A car with this VIN code already exists. Please use a different VIN code.'))
+
+        description = validated_data.get('car_additional_description', )
 
         if profanity.contains_profanity(description):
-
             advert = AdvertisementModel.objects.create(seller=seller,
                                                        car=car,
                                                        is_active=False,
@@ -71,16 +74,22 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
             EmailService.notify_admin(advert, description)
 
-            raise ValidationError(_(f"You will not be able to publish the advertisement using inappropriate language '{description}'. "
-                                    f"Please edit it. "
-                                    f"A notification about the use of inappropriate language has been sent to the administrator." ))
+            raise ValidationError(
+                _(f"You will not be able to publish the advertisement using inappropriate language '{description}'. "
+                  f"Please edit it. "
+                  f"A notification about the use of inappropriate language has been sent to the administrator."))
 
         statistic = StatisticAdvertisementModel.objects.create()
-        advert = AdvertisementModel.objects.create(seller=seller,
-                                                   car=car,
-                                                   is_active=True,
-                                                   statistic=statistic,
-                                                   **validated_data)
+        try:
+            advert = AdvertisementModel.objects.create(seller=seller,
+                                                       car=car,
+                                                       is_active=True,
+                                                       statistic=statistic,
+                                                       **validated_data)
+        except IntegrityError as e:
+            raise ValidationError(
+                _('An advertisement with this car already exists. Please check the car details and try again.'))
+
         return advert
 
 
