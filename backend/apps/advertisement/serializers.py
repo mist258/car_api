@@ -55,14 +55,19 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         if seller.account_type == 'basic':
             advertisement = AdvertisementModel.objects.filter(seller=seller).count()
             if advertisement >= 1:
-                raise ValidationError(_('You should have premium subscription to publish more, '
+                raise ValidationError(
+                    _('You should have premium subscription to publish more, '
                                         'then 1 advertisement'))
 
         car_data = validated_data.pop('car', )
+
         try:
             car, created = CarModel.objects.get_or_create(**car_data)
+
         except IntegrityError as e:
-            raise ValidationError(_('A car with this VIN code already exists. Please use a different VIN code.'))
+            raise ValidationError(
+                _('A car with this VIN code already exists. '
+                  'Please use a different VIN code.'))
 
         description = validated_data.get('car_additional_description', )
 
@@ -80,15 +85,17 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                   f"A notification about the use of inappropriate language has been sent to the administrator."))
 
         statistic = StatisticAdvertisementModel.objects.create()
+
         try:
             advert = AdvertisementModel.objects.create(seller=seller,
                                                        car=car,
                                                        is_active=True,
                                                        statistic=statistic,
                                                        **validated_data)
-        except IntegrityError as e:
+        except IntegrityError:
             raise ValidationError(
-                _('An advertisement with this car already exists. Please check the car details and try again.'))
+                _('An advertisement with this car\'s VIN CODE already exists. '
+                  'Please check the car details and try again.'))
 
         return advert
 
