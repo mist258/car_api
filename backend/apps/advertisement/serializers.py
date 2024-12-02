@@ -58,17 +58,12 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                 raise ValidationError(_('You should have premium subscription to publish more, '
                                         'then 1 advertisement'))
 
-        car_data = validated_data.pop('car', {})
-        description = validated_data.get('car_additional_description', '')
+        car_data = validated_data.pop('car',)
         car, created = CarModel.objects.get_or_create(**car_data)
+        description = validated_data.get('car_additional_description',)
 
         if profanity.contains_profanity(description):
-            remaining = 2 - validated_data.get('edit_attempts', 0)
 
-            if remaining <= 0:
-                raise ValidationError(_('Maximum edit attempts reached. '
-                                        'Advertisement sent for review.'))
-            validated_data['edit_attempts'] = validated_data.get('edit_attempts', 0) + 1
             advert = AdvertisementModel.objects.create(seller=seller,
                                                        car=car,
                                                        is_active=False,
@@ -76,7 +71,9 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
             EmailService.notify_admin(advert, description)
 
-            raise ValidationError(_(f'Inappropriate content detected. {remaining} attempts remaining.'))
+            raise ValidationError(_(f"You will not be able to publish the advertisement using inappropriate language '{description}'. "
+                                    f"Please edit it. "
+                                    f"A notification about the use of inappropriate language has been sent to the administrator." ))
 
         statistic = StatisticAdvertisementModel.objects.create()
         advert = AdvertisementModel.objects.create(seller=seller,
