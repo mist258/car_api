@@ -31,8 +31,8 @@ class UserCreateView(CreateAPIView):
                                                               responses={status.HTTP_200_OK : UserSerializer()}))
 class UserBlockView(GenericAPIView):
     '''
-        block user (
-        for manager or superuser)
+        block user (user id)
+        (for manager or superuser)
     '''
     permission_classes = (IsSuperUserOrIsStaff,)
     serializer_class = UserSerializer
@@ -57,7 +57,7 @@ class UserBlockView(GenericAPIView):
                                                               responses={status.HTTP_200_OK : UserSerializer()}))
 class UserUnblockView(GenericAPIView):
     '''
-        unblock user
+        unblock user (user id)
         (for manager or superuser)
     '''
     permission_classes = (IsSuperUserOrIsStaff,)
@@ -82,7 +82,7 @@ class UserUnblockView(GenericAPIView):
                                                               responses={status.HTTP_200_OK : UserSerializer()}))
 class UserToManagerView(GenericAPIView):
     '''
-        make user a manager
+        make user a manager (user id)
         (for superuser)
     '''
     permission_classes = (IsSuperUser,)
@@ -148,10 +148,10 @@ class ShowAllUsersView(ListAPIView):
         return UserModel.objects.exclude(pk=self.request.user.id).select_related('profile')
 
 
-@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='make premium acc'))
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='upgrade basic acc'))
 class MakePremiumAccountView(GenericAPIView):
     '''
-        from basic to premium account
+        from basic to premium account (user id)
         (for manager or superuser)
     '''
 
@@ -173,6 +173,36 @@ class MakePremiumAccountView(GenericAPIView):
 
         if profile.role_type == 'seller' and profile.account_type == 'basic':
             profile.account_type = 'premium'
+            profile.save()
+
+        return Response(serializer_user.data, status.HTTP_200_OK)
+
+
+@method_decorator(name='patch', decorator=swagger_auto_schema(operation_id='downgrade premium acc'))
+class DownGradeToBasicAccountView(GenericAPIView):
+    '''
+        from premium to basic account (user id)
+        (for manager or superuser)
+    '''
+
+    serializer_class = UserSerializer
+    permission_classes = (IsSuperUserOrIsStaff,)
+
+    def get_queryset(self):
+        return UserModel.objects.exclude(pk=self.request.user.id).select_related('profile')
+
+    def patch(self, *args, **kwargs):
+        user = self.get_object()
+
+        if user.is_seller and user.is_premium and not user.is_blocked and not user.is_staff:
+            user.is_premium = False
+            user.save()
+        serializer_user = UserSerializer(user)
+
+        profile = UserProfile.objects.get(user=user)
+
+        if profile.role_type == 'seller' and profile.account_type == 'premium':
+            profile.account_type = 'basic'
             profile.save()
 
         return Response(serializer_user.data, status.HTTP_200_OK)
