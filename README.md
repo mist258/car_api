@@ -54,6 +54,30 @@ VI. ShowAllUsers: staff can obtain a list of all users using filters
 VII. MakePremiumAccount: manager can change basic accout to premium
 
 
+## START PROJECT
+
+
+```bash
+git clone https://github.com/mist258/car_api.git 
+
+poetry install
+
+docker compose build 
+
+docker compose up -d 
+
+docker exec -it car_api-db-1 psql -U postgres -c "CREATE DATABASE car_api;
+
+docker compose run --rm app sh
+
+ ./manage.py makemigrations
+ ./manage.py migrate
+ ./manage.py createsuperuser
+```
+    
+
+
+
 
 
 
