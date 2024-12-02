@@ -72,6 +72,7 @@ docker compose run --rm app sh
 
  ./manage.py makemigrations
  ./manage.py migrate
+ ./manage.py createsuperuser
 ```
     
 
