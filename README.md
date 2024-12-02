@@ -53,6 +53,8 @@ VI. ShowAllUsers: staff can obtain a list of all users using filters
 
 VII. MakePremiumAccount: manager can change basic accout to premium
 
+VII. DownGradeToBasicAccount: manager can change premium accout to basic
+
 
 ## START PROJECT
 
