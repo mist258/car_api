@@ -28,12 +28,14 @@ XI. DeactivateAdvertisement: allows staff to deactivate an advert by ID
 XII. ActivateAdvertisement: allows staff to activate an advert by ID
 
 
-## AUTH
+## AUTH 
 I. ActivationUser: allows the activation of a user's account
 
 II. RecoveryPasswordRequest: user can send a request to reset their login password
 
 III. RecoveryPassword: resets the password using the token
+
+IV. SocketToken: get socket token for users
 
 
 ## USERS
@@ -48,6 +50,12 @@ IV. UserToManager: allows the superuser (owner) to create a manager
 V. GetMe: аny authorized user can obtain information about themselves
 
 VI. ShowAllUsers: staff can obtain a list of all users using filters
+
+VII. MakePremiumAccount: manager can change basic accout to premium
+
+
+
+
 
 
 
