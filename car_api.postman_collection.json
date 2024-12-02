@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"natalia.kolchuk@gmail.com\",\n    \"password\": \"12345\",\n    \"profile\": {\n        \"first_name\": \"Gojo\",\n        \"last_name\": \"Satoru\",\n        \"phone_number\": \"+380970655212\",\n        \"age\": 45,\n        \"role_type\": \"seller\" \n    }\n}",
+							"raw": "{\n    \"email\": \"user@gmail.com\",\n    \"password\": \"12345\",\n    \"profile\": {\n        \"first_name\": \"Toji\",\n        \"last_name\": \"Zenin\",\n        \"phone_number\": \"+380970655212\",\n        \"age\": 30,\n        \"role_type\": \"seller\" \n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -247,7 +247,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"price\": 25325,\n    \"currency\": \"USD\",\n    \"sale_location\": \"lviv\",\n    \"car_additional_description\": \"luck\",\n    \"car\": {\n        \"car_brand\": \"Ford\",\n        \"car_model\": \"Mustang\",\n        \"car_body_type\": \"Coupe\",\n        \"car_fuel_type\": \"Diesel\",\n        \"vin_code\": \"HK456326098056137\",\n        \"car_gear_type\": \"Manual\",\n        \"car_mileage\": 1452,\n        \"car_engine_displacement\": 4.2,\n        \"car_drivetrain\": \"FWD\",\n        \"car_year\": 2019,\n        \"car_country_origin\": \"US\",\n        \"car_accident_history\": \"False\"\n    }\n}",
+							"raw": "{\n    \"price\": 10325,\n    \"currency\": \"USD\",\n    \"sale_location\": \"odesa\",\n    \"car_additional_description\": \"luck\",\n    \"car\": {\n        \"car_brand\": \"Chevrolet\",\n        \"car_model\": \"Camaro\",\n        \"car_body_type\": \"Coupe\",\n        \"car_fuel_type\": \"Diesel\",\n        \"vin_code\": \"HK456131350693037\",\n        \"car_gear_type\": \"Manual\",\n        \"car_mileage\": 1452,\n        \"car_engine_displacement\": 4.2,\n        \"car_drivetrain\": \"FWD\",\n        \"car_year\": 2019,\n        \"car_country_origin\": \"US\",\n        \"car_accident_history\": \"False\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -277,7 +277,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQxNTczLCJpYXQiOjE3MzMwNTUxNzMsImp0aSI6IjA0ZjhkOWNlNmMyZjQzYWFiMzFhMmNmMGU2YTI3ODIzIiwidXNlcl9pZCI6MTB9.Gxcn5NIqNdE8JMBmuvD1yhUbjQcJ3fV2mFxUZtdG9LY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTY1NDc0LCJpYXQiOjE3MzMwNzkwNzQsImp0aSI6ImIzMGNlMzc5MWFhNDRjMDZhMzU1OTk3ODUzZTZlM2M3IiwidXNlcl9pZCI6MTB9.ZpsxpZOSGfZSZ_0JqRgTrIMeOt5RZELGDGj2JivsMAg",
 									"type": "string"
 								}
 							]
@@ -288,15 +288,21 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "size",
-									"value": "5",
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
 									"type": "text",
 									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{host}}advertisement/listing",
+							"raw": "{{host}}advertisement/listing?page=1",
 							"host": [
 								"{{host}}advertisement"
 							],
@@ -308,6 +314,10 @@
 									"key": "size",
 									"value": "4",
 									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
 								}
 							]
 						}
@@ -331,7 +341,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"price\": \"46327.000\",\n        \"currency\": \"USD\",\n        \"sale_location\": \"lviv\",\n        \"photo\": null,\n        \"is_active\": true,\n        \"car_additional_description\": \"luck\",\n        \"car\": {\n            \"car_brand\": \"Chevrolet\",\n            \"car_model\": \"Camaro\",\n            \"car_body_type\": \"Coupe\",\n            \"car_fuel_type\": \"Diesel\",\n            \"vin_code\": \"HK456328498856327\",\n            \"car_gear_type\": \"Manual\",\n            \"car_mileage\": 1452.0,\n            \"car_engine_displacement\": 4.2,\n            \"car_drivetrain\": \"FWD\",\n            \"car_year\": 2019,\n            \"car_country_origin\": \"US\",\n            \"car_accident_history\": \"False\"\n        }\n}",
+							"raw": "{\n        \"price\": \"46327.000\",\n        \"currency\": \"USD\",\n        \"sale_location\": \"lviv\",\n        \"photo\": null,\n        \"is_active\": true,\n        \"car_additional_description\": \"fuck\",\n        \"car\": {\n            \"car_brand\": \"Chevrolet\",\n            \"car_model\": \"Camaro\",\n            \"car_body_type\": \"Coupe\",\n            \"car_fuel_type\": \"Diesel\",\n            \"vin_code\": \"HK456328498856327\",\n            \"car_gear_type\": \"Manual\",\n            \"car_mileage\": 1452.0,\n            \"car_engine_displacement\": 4.2,\n            \"car_drivetrain\": \"FWD\",\n            \"car_year\": 2019,\n            \"car_country_origin\": \"US\",\n            \"car_accident_history\": \"False\"\n        }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -339,12 +349,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}advertisement/15/retrieving",
+							"raw": "{{host}}advertisement/36/retrieving",
 							"host": [
 								"{{host}}advertisement"
 							],
 							"path": [
-								"15",
+								"36",
 								"retrieving"
 							]
 						}
@@ -368,7 +378,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"price\": \"46327.000\",\n        \"currency\": \"USD\",\n        \"sale_location\": \"lviv\",\n        \"photo\": null,\n        \"is_active\": true,\n        \"car_additional_description\": \"fuck\",\n        \"car\": {\n            \"car_brand\": \"Ford\",\n            \"car_model\": \"Mustang\",\n            \"car_body_type\": \"Coupe\",\n            \"car_fuel_type\": \"Diesel\",\n            \"vin_code\": \"HK456328498856327\",\n            \"car_gear_type\": \"Manual\",\n            \"car_mileage\": 1452.0,\n            \"car_engine_displacement\": 4.2,\n            \"car_drivetrain\": \"FWD\",\n            \"car_year\": 2019,\n            \"car_country_origin\": \"US\",\n            \"car_accident_history\": \"False\"\n        }\n}",
+							"raw": "{\n        \"price\": \"46327.000\",\n        \"currency\": \"USD\",\n        \"sale_location\": \"lviv\",\n        \"photo\": null,\n        \"is_active\": true,\n        \"car_additional_description\": \"luck\",\n        \"car\": {\n            \"car_brand\": \"Ford\",\n            \"car_model\": \"Mustang\",\n            \"car_body_type\": \"Coupe\",\n            \"car_fuel_type\": \"Diesel\",\n            \"vin_code\": \"HK456328498856327\",\n            \"car_gear_type\": \"Manual\",\n            \"car_mileage\": 1452.0,\n            \"car_engine_displacement\": 4.2,\n            \"car_drivetrain\": \"FWD\",\n            \"car_year\": 2019,\n            \"car_country_origin\": \"US\",\n            \"car_accident_history\": \"False\"\n        }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -376,12 +386,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}advertisement/16/retrieving",
+							"raw": "{{host}}advertisement/21/retrieving",
 							"host": [
 								"{{host}}advertisement"
 							],
 							"path": [
-								"16",
+								"21",
 								"retrieving"
 							]
 						}
@@ -396,7 +406,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDk5ODM4LCJpYXQiOjE3MzMwMTM0MzgsImp0aSI6Ijg5OGQzYjc1NGNhYzQxOGY5NDI4N2M0YjNkOTkxODg2IiwidXNlcl9pZCI6MTF9.XCZ9OwjF8Zw0qYm62LmhGLu6zWPa3wmc_AmPctXQRQQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTY1MzQ2LCJpYXQiOjE3MzMwNzg5NDYsImp0aSI6Ijg2ZjhkNzNjMzM5YzQ5Y2U4NzllZWJiZTcyN2ZkY2M2IiwidXNlcl9pZCI6MTF9.Ov96PIwqlBMPq1fNi5nWvRC3Vi9g2nGC0cz_7Yfm3Bs",
 									"type": "string"
 								}
 							]
@@ -404,12 +414,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}advertisement/15/destruction",
+							"raw": "{{host}}advertisement/17/destruction",
 							"host": [
 								"{{host}}advertisement"
 							],
 							"path": [
-								"15",
+								"17",
 								"destruction"
 							]
 						}
@@ -422,7 +432,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}advertisement/adv_listing?page=1&sise =2",
+							"raw": "{{host}}advertisement/adv_listing?page=2",
 							"host": [
 								"{{host}}advertisement"
 							],
@@ -432,11 +442,12 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "2"
 								},
 								{
-									"key": "sise ",
-									"value": "2"
+									"key": "size ",
+									"value": "2",
+									"disabled": true
 								},
 								{
 									"key": "car_model",
@@ -461,7 +472,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQyOTg4LCJpYXQiOjE3MzMwNTY1ODgsImp0aSI6IjlkODRmMTNjNDE2NDQ3MDZhMDNlODY1ZmQzZTNlNTFiIiwidXNlcl9pZCI6MTB9.v2vCRuDZHzSi4iNeQljamveDzRlJMEBaPB0bbbGwd38",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTY1NDc0LCJpYXQiOjE3MzMwNzkwNzQsImp0aSI6ImIzMGNlMzc5MWFhNDRjMDZhMzU1OTk3ODUzZTZlM2M3IiwidXNlcl9pZCI6MTB9.ZpsxpZOSGfZSZ_0JqRgTrIMeOt5RZELGDGj2JivsMAg",
 									"type": "string"
 								}
 							]
@@ -485,12 +496,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{host}}advertisement/17/photo",
+							"raw": "{{host}}advertisement/19/photo",
 							"host": [
 								"{{host}}advertisement"
 							],
 							"path": [
-								"17",
+								"19",
 								"photo"
 							]
 						}
@@ -513,12 +524,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}advertisement/11/remove_photo",
+							"raw": "{{host}}advertisement/12/remove_photo",
 							"host": [
 								"{{host}}advertisement"
 							],
 							"path": [
-								"11",
+								"12",
 								"remove_photo"
 							]
 						}
@@ -659,8 +670,8 @@
 									"const res  =  pm.response.json()",
 									"",
 									"",
-									"pm.environment.set(\"access\", \"res.access\");",
-									"pm.environment.set(\"refresh\", \"res.refresh\");",
+									"pm.environment.set(\"access\", res.access);",
+									"pm.environment.set(\"refresh\", res.refresh);",
 									""
 								],
 								"type": "text/javascript",
@@ -673,7 +684,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"12345\"\n}\n",
+							"raw": "{\n    \"email\": \"user@gmail.com\",\n    \"password\": \"12345\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -818,13 +829,76 @@
 				},
 				{
 					"name": "get socket token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res  =  pm.response.json()",
+									"",
+									"",
+									"pm.environment.set(\"socket_token\", res.token);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{host}}auth/socket_token",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"socket_token"
+							]
+						}
 					},
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "downgrade premium",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{host}}users/10/basic_account",
+					"host": [
+						"{{host}}users"
+					],
+					"path": [
+						"10",
+						"basic_account"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
