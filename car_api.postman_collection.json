@@ -1,0 +1,904 @@
+{
+	"info": {
+		"_postman_id": "c76570ca-6eb5-46fd-8e95-d1b265799c6b",
+		"name": "car_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33175789"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "users",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@gmail.com\",\n    \"password\": \"12345\",\n    \"profile\": {\n        \"first_name\": \"Toji\",\n        \"last_name\": \"Zenin\",\n        \"phone_number\": \"+380970655212\",\n        \"age\": 30,\n        \"role_type\": \"seller\" \n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}users",
+							"host": [
+								"{{host}}users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "block user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQxODY0LCJpYXQiOjE3MzMwNTU0NjQsImp0aSI6ImJjYjhiOWJjNGU3MzRkODNhMjU4ODJlZDIxODA3NTQwIiwidXNlcl9pZCI6MTF9.KOyKxinYdaUZLSGjAmyDPWM9MTyTZUiNzHy4BH1Ld8I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{host}}users/10/block",
+							"host": [
+								"{{host}}users"
+							],
+							"path": [
+								"10",
+								"block"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unblock user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDg0NTcxLCJpYXQiOjE3MzI5OTgxNzEsImp0aSI6IjdhMzNhNTI1ZWNjODQwZGU4Nzc3ZjY1NmU0ZDdjYzI1IiwidXNlcl9pZCI6MTF9.LbNGvlR-L-mo3B66FQL4TrfPjFBE-hgOs4AkfFwj4Ac",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{host}}users/10/unblock",
+							"host": [
+								"{{host}}users"
+							],
+							"path": [
+								"10",
+								"unblock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user to manager",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDgzNDI5LCJpYXQiOjE3MzI5OTcwMjksImp0aSI6IjlhZTExZTk1NmY2MzQyMGJiZjgwNTgwNThmY2UzZTMxIiwidXNlcl9pZCI6MTF9.VqHK0hF56rDBz9gECJi9FmWyPjb5LsVleI8YCur68VQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{host}}users/10/staff",
+							"host": [
+								"{{host}}users"
+							],
+							"path": [
+								"10",
+								"staff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get  my info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDgzNDI5LCJpYXQiOjE3MzI5OTcwMjksImp0aSI6IjlhZTExZTk1NmY2MzQyMGJiZjgwNTgwNThmY2UzZTMxIiwidXNlcl9pZCI6MTF9.VqHK0hF56rDBz9gECJi9FmWyPjb5LsVleI8YCur68VQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}users/my_info",
+							"host": [
+								"{{host}}users"
+							],
+							"path": [
+								"my_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show_users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDgzNDI5LCJpYXQiOjE3MzI5OTcwMjksImp0aSI6IjlhZTExZTk1NmY2MzQyMGJiZjgwNTgwNThmY2UzZTMxIiwidXNlcl9pZCI6MTF9.VqHK0hF56rDBz9gECJi9FmWyPjb5LsVleI8YCur68VQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}users/list_users",
+							"host": [
+								"{{host}}users"
+							],
+							"path": [
+								"list_users"
+							],
+							"query": [
+								{
+									"key": "is_buyer",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "account_type",
+									"value": "basic",
+									"disabled": true
+								},
+								{
+									"key": "is_active",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "is_blocked",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "is_premium",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "make premium",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDk1ODg5LCJpYXQiOjE3MzMwMDk0ODksImp0aSI6IjRjZTg5OGE4ZTg5YzQ5OGZhMjk2M2FmYWZkODBiYzdkIiwidXNlcl9pZCI6MTF9.WhsjUdFpyr1XR5O4kUpwzQ_4NM8WCQjhMQr6q_uJPKg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{host}}users/10/premium_account",
+							"host": [
+								"{{host}}users"
+							],
+							"path": [
+								"10",
+								"premium_account"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "advertisement",
+			"item": [
+				{
+					"name": "post advert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQxMjUwLCJpYXQiOjE3MzMwNTQ4NTAsImp0aSI6IjViYTU2YWE4MmE5MzQzZGZhMDQyMjc5YWY5NTFkOTJhIiwidXNlcl9pZCI6MTB9.33hZ-xo_vKFwMuZNeK49cEOcfw4Se_1p2knscrmNB98",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price\": 10325,\n    \"currency\": \"USD\",\n    \"sale_location\": \"odesa\",\n    \"car_additional_description\": \"luck\",\n    \"car\": {\n        \"car_brand\": \"Chevrolet\",\n        \"car_model\": \"Camaro\",\n        \"car_body_type\": \"Coupe\",\n        \"car_fuel_type\": \"Diesel\",\n        \"vin_code\": \"HK456131350693037\",\n        \"car_gear_type\": \"Manual\",\n        \"car_mileage\": 1452,\n        \"car_engine_displacement\": 4.2,\n        \"car_drivetrain\": \"FWD\",\n        \"car_year\": 2019,\n        \"car_country_origin\": \"US\",\n        \"car_accident_history\": \"False\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}advertisement/posts",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list adv",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTY1NDc0LCJpYXQiOjE3MzMwNzkwNzQsImp0aSI6ImIzMGNlMzc5MWFhNDRjMDZhMzU1OTk3ODUzZTZlM2M3IiwidXNlcl9pZCI6MTB9.ZpsxpZOSGfZSZ_0JqRgTrIMeOt5RZELGDGj2JivsMAg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}advertisement/listing?page=1",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"listing"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "4",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDk4ODYzLCJpYXQiOjE3MzMwMTI0NjMsImp0aSI6IjJlMzVkZjAyMzlkOTQ0MzNhNjIwMTFiMDdiNTU0NTAzIiwidXNlcl9pZCI6MTB9.FU3LI9scn4jlC9dP5tvyvwiA4mGn0E_QDV-3vyKDgm4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"price\": \"46327.000\",\n        \"currency\": \"USD\",\n        \"sale_location\": \"lviv\",\n        \"photo\": null,\n        \"is_active\": true,\n        \"car_additional_description\": \"fuck\",\n        \"car\": {\n            \"car_brand\": \"Chevrolet\",\n            \"car_model\": \"Camaro\",\n            \"car_body_type\": \"Coupe\",\n            \"car_fuel_type\": \"Diesel\",\n            \"vin_code\": \"HK456328498856327\",\n            \"car_gear_type\": \"Manual\",\n            \"car_mileage\": 1452.0,\n            \"car_engine_displacement\": 4.2,\n            \"car_drivetrain\": \"FWD\",\n            \"car_year\": 2019,\n            \"car_country_origin\": \"US\",\n            \"car_accident_history\": \"False\"\n        }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}advertisement/36/retrieving",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"36",
+								"retrieving"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "part_update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMDk4ODYzLCJpYXQiOjE3MzMwMTI0NjMsImp0aSI6IjJlMzVkZjAyMzlkOTQ0MzNhNjIwMTFiMDdiNTU0NTAzIiwidXNlcl9pZCI6MTB9.FU3LI9scn4jlC9dP5tvyvwiA4mGn0E_QDV-3vyKDgm4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"price\": \"46327.000\",\n        \"currency\": \"USD\",\n        \"sale_location\": \"lviv\",\n        \"photo\": null,\n        \"is_active\": true,\n        \"car_additional_description\": \"luck\",\n        \"car\": {\n            \"car_brand\": \"Ford\",\n            \"car_model\": \"Mustang\",\n            \"car_body_type\": \"Coupe\",\n            \"car_fuel_type\": \"Diesel\",\n            \"vin_code\": \"HK456328498856327\",\n            \"car_gear_type\": \"Manual\",\n            \"car_mileage\": 1452.0,\n            \"car_engine_displacement\": 4.2,\n            \"car_drivetrain\": \"FWD\",\n            \"car_year\": 2019,\n            \"car_country_origin\": \"US\",\n            \"car_accident_history\": \"False\"\n        }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}advertisement/21/retrieving",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"21",
+								"retrieving"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destruction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTY1MzQ2LCJpYXQiOjE3MzMwNzg5NDYsImp0aSI6Ijg2ZjhkNzNjMzM5YzQ5Y2U4NzllZWJiZTcyN2ZkY2M2IiwidXNlcl9pZCI6MTF9.Ov96PIwqlBMPq1fNi5nWvRC3Vi9g2nGC0cz_7Yfm3Bs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/17/destruction",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"17",
+								"destruction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all adv listing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/adv_listing?page=2",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"adv_listing"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "size ",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "car_model",
+									"value": "lancer",
+									"disabled": true
+								},
+								{
+									"key": " car_accident_history",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add photo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTY1NDc0LCJpYXQiOjE3MzMwNzkwNzQsImp0aSI6ImIzMGNlMzc5MWFhNDRjMDZhMzU1OTk3ODUzZTZlM2M3IiwidXNlcl9pZCI6MTB9.ZpsxpZOSGfZSZ_0JqRgTrIMeOt5RZELGDGj2JivsMAg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/home/darkness/Desktop/photo_2024-12-01_14-41-32.jpg"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}advertisement/19/photo",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"19",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete photo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQyOTg4LCJpYXQiOjE3MzMwNTY1ODgsImp0aSI6IjlkODRmMTNjNDE2NDQ3MDZhMDNlODY1ZmQzZTNlNTFiIiwidXNlcl9pZCI6MTB9.v2vCRuDZHzSi4iNeQljamveDzRlJMEBaPB0bbbGwd38",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/12/remove_photo",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"12",
+								"remove_photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "currencies convert",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/19/currencies_converter",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"19",
+								"currencies_converter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "seller advert",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/17/seller_advert",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"17",
+								"seller_advert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "non active advert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQxODY0LCJpYXQiOjE3MzMwNTU0NjQsImp0aSI6ImJjYjhiOWJjNGU3MzRkODNhMjU4ODJlZDIxODA3NTQwIiwidXNlcl9pZCI6MTF9.KOyKxinYdaUZLSGjAmyDPWM9MTyTZUiNzHy4BH1Ld8I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/non_active_advert",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"non_active_advert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate advert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQxODY0LCJpYXQiOjE3MzMwNTU0NjQsImp0aSI6ImJjYjhiOWJjNGU3MzRkODNhMjU4ODJlZDIxODA3NTQwIiwidXNlcl9pZCI6MTF9.KOyKxinYdaUZLSGjAmyDPWM9MTyTZUiNzHy4BH1Ld8I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/17/activate_advert",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"17",
+								"activate_advert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deactivate advert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzMTQxODY0LCJpYXQiOjE3MzMwNTU0NjQsImp0aSI6ImJjYjhiOWJjNGU3MzRkODNhMjU4ODJlZDIxODA3NTQwIiwidXNlcl9pZCI6MTF9.KOyKxinYdaUZLSGjAmyDPWM9MTyTZUiNzHy4BH1Ld8I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{host}}advertisement/17/deactivate_advert",
+							"host": [
+								"{{host}}advertisement"
+							],
+							"path": [
+								"17",
+								"deactivate_advert"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "auth user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res  =  pm.response.json()",
+									"",
+									"",
+									"pm.environment.set(\"access\", res.access);",
+									"pm.environment.set(\"refresh\", res.refresh);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@gmail.com\",\n    \"password\": \"12345\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}auth",
+							"host": [
+								"{{host}}auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{refresh}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "refresh",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyODk5NzAzMywiaWF0IjoxNzI4OTEwNjMzLCJqdGkiOiJlOGE3ZGQ3OWY0ZjU0ZmU1OTBjNGYxY2Q5MzMzZDZkZCIsInVzZXJfaWQiOjF9._S76BnEBRpLWLsxvEa7jK5o9RedQKK6-WJLbdhCJc0g"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "refresh",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczMzA3NTMxNywiaWF0IjoxNzMyOTg4OTE3LCJqdGkiOiI5NzA5ZDExYTRlOTE0ZTg3ODE3ZmNlMTYwMzI1NmYwMiIsInVzZXJfaWQiOjEwfQ.tj3pZEsO7NGPYGDzp_y5NR9z1eG6p_1ZkxU1Pvk1bBA",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}auth/refresh",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{host}}auth/activate/token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWN0aXZhdGUiLCJleHAiOjE3MzI5OTIxOTksImlhdCI6MTczMjk4ODY1OSwianRpIjoiYzM2MGE0ZDM3MzEwNDUxYTlmMDc3NzFjNmFkNWRmN2UiLCJ1c2VyX2lkIjoxMH0.BOabbS8Y7wV6-mGGVKw9XPq4yl7WlU0QQy5H_JhGgzI",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"activate",
+								"token"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWN0aXZhdGUiLCJleHAiOjE3MzI5OTIxOTksImlhdCI6MTczMjk4ODY1OSwianRpIjoiYzM2MGE0ZDM3MzEwNDUxYTlmMDc3NzFjNmFkNWRmN2UiLCJ1c2VyX2lkIjoxMH0.BOabbS8Y7wV6-mGGVKw9XPq4yl7WlU0QQy5H_JhGgzI"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recovery reques",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"natalia.kolchuk@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}auth/recovery_request",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"recovery_request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recovery password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}auth/recovery_password/:token",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"recovery_password",
+								":token"
+							],
+							"variable": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVjb3ZlcnkiLCJleHAiOjE3MzI5OTI3MjUsImlhdCI6MTczMjk4OTE4NSwianRpIjoiOGZlYTkwYzcxYzk4NDgxNDkwM2M5ZjY0NGI5M2JiZWYiLCJ1c2VyX2lkIjoxMH0.aodKoueEjuWSJ-BVSYiZ_C7SOCo-ZRnjibbn8WwBsTY"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get socket token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res  =  pm.response.json()",
+									"",
+									"",
+									"pm.environment.set(\"socket_token\", res.token);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}auth/socket_token",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"socket_token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "downgrade premium",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{host}}users/10/basic_account",
+					"host": [
+						"{{host}}users"
+					],
+					"path": [
+						"10",
+						"basic_account"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
