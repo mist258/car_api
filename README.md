@@ -68,7 +68,7 @@ docker compose build
 
 docker compose up -d 
 
-docker exec -it car_api-db-1 psql -U postgres -c "CREATE DATABASE car_api;
+docker exec -it car_api-db-1 psql -U postgres -c "CREATE DATABASE car_api";
 
 docker compose run --rm app sh
 
