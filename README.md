@@ -3,57 +3,57 @@
 
 ## ADVERTISEMENT
 
-I. AdvertisementCreate: view allows the seller to create a new advert, validating their account type: premium or basic.
+I. **AdvertisementCreate**: view allows the seller to create a new advert, validating their account type: premium or basic.
 
-IІ. ShowAllUsersAdv: user can view a list of their own adverts 
+IІ. **ShowAllUsersAdv**: user can view a list of their own adverts 
 
-ІІІ. UpdateUserAdv: user can update their own advert by ID
+ІІІ. **UpdateUserAdv**: user can update their own advert by ID
 
-IV. ShowUserAdvById: any user can view a advert by ID from a seller
+IV. **ShowUserAdvById**: any user can view a advert by ID from a seller
 
-V. DestroyUserAdv: а user or staff can delete an advert by ID
+V. **DestroyUserAdv**: а user or staff can delete an advert by ID
 
-VI. ShowAdvertisementList: any user or guest can view the entire list of active adverts
+VI. **ShowAdvertisementList**: any user or guest can view the entire list of active adverts
 
-VII. AdvCarAddPhoto: seller can add photos to the listing in a limited quantity (up to 10 images)
+VII. **AdvCarAddPhoto**: seller can add photos to the listing in a limited quantity (up to 10 images)
 
-VIIІ. AdvCarRemovePhoto: seller can delete photos from a current advert
+VIIІ. **AdvCarRemovePhoto**: seller can delete photos from a current advert
 
-IX. CurrencyConverter: any user has the ability to convert the current price of an advert in the current currency to another available currency
+IX. **CurrencyConverter**: any user has the ability to convert the current price of an advert in the current currency to another available currency
 
-X. ShowNonActivateAdvertisement: allows staff to view the list of inactive adverts
+X. **ShowNonActivateAdvertisement**: allows staff to view the list of inactive adverts
 
-XI. DeactivateAdvertisement: allows staff to deactivate an advert by ID
+XI. **DeactivateAdvertisement**: allows staff to deactivate an advert by ID
 
-XII. ActivateAdvertisement: allows staff to activate an advert by ID
+XII. **ActivateAdvertisement**: allows staff to activate an advert by ID
 
 
 ## AUTH 
-I. ActivationUser: allows the activation of a user's account
+I. **ActivationUser**: allows the activation of a user's account
 
-II. RecoveryPasswordRequest: user can send a request to reset their login password
+II. **RecoveryPasswordRequest**: user can send a request to reset their login password
 
-III. RecoveryPassword: resets the password using the token
+III. **RecoveryPassword**: resets the password using the token
 
-IV. SocketToken: get socket token for users
+IV. **SocketToken**: get socket token for users
 
 
 ## USERS
-I. UserCreate: allows the creation of a user account
+I. **UserCreate**: allows the creation of a user account
 
-II. UserBlock: allows staff to block a user by ID
+II. **UserBlock**: allows staff to block a user by ID
 
-III. UserUnblock: allows staff to unblock a user by ID
+III. **UserUnblock**: allows staff to unblock a user by ID
 
-IV. UserToManager: allows the superuser (owner) to create a manager
+IV. **UserToManager**: allows the superuser (owner) to create a manager
 
-V. GetMe: аny authorized user can obtain information about themselves
+V. **GetMe**: аny authorized user can obtain information about themselves
 
-VI. ShowAllUsers: staff can obtain a list of all users using filters
+VI. **ShowAllUsers**: staff can obtain a list of all users using filters
 
-VII. MakePremiumAccount: manager can change basic accout to premium
+VII. **MakePremiumAccount**: manager can change basic accout to premium
 
-VII. DownGradeToBasicAccount: manager can change premium accout to basic
+VII. **DownGradeToBasicAccount**: manager can change premium accout to basic
 
 
 ## START PROJECT
@@ -76,7 +76,7 @@ docker compose run --rm app sh
  ./manage.py migrate
  ./manage.py createsuperuser
 ```
-REMARK:
+**REMARK***:
 
 For testing websockets, use the following JSON:
 
@@ -85,46 +85,3 @@ For testing websockets, use the following JSON:
     "message": "Hello",
     "request_id":1
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
