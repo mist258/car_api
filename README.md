@@ -76,7 +76,7 @@ docker compose run --rm app sh
  ./manage.py migrate
  ./manage.py createsuperuser
 ```
-**REMARK***:
+**REMARK**:
 
 For testing websockets, use the following JSON:
 
